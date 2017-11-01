@@ -45,14 +45,14 @@ Node* Graph::getNode(string name)
 void Graph::showGraph()
 {
 	bool shownNodes[vertex_count];
-	for (int i = 0 ; i < vertex_count ; i++)
+	for (uint i = 0 ; i < vertex_count ; i++)
 		vertices[i]->showNode();
 }
 
 int Graph::getEdgeCount()
 {
 	int sum = 0;
-	for (int i = 0 ; i < vertex_count ; i++)
+	for (uint i = 0 ; i < vertex_count ; i++)
 		sum += vertices[i]->getEdgeCount();
 	return sum/2;
 }
@@ -81,5 +81,57 @@ int Graph::getNodeNumber(Node* node)
 
 Graph* Graph::primBasic()
 {
+	cout << endl << "primBasic :" << endl;
 	
+	// ARBRE => On crée un arbre à partir du premier sommet (duquel on garde que le nom) ;
+	cout << "Arbre (init) :" << endl;
+	Graph* arbre = new Graph();
+	arbre->addNode(vertices[0]->getName());
+	arbre->showGraph();
+	
+	//ANCIEN => On garde tous les autres sommets pour en faire un arbre (on garde les arrêtes mêmes si elles sont sur l'arbre couvrant min) ;
+	cout << "Ancien (init) :" << endl;
+	Graph* ancien = new Graph();
+	for (int i = 1 ; i < vertex_count ; i++)
+		ancien->addNode(vertices[i]);
+	ancien->showGraph();
+	
+	// Réitère jusqu'à plus rester de sommets
+	for (uint i = 0 ; i < vertex_count - 1 ; i++)
+	{
+		uint min = 9999;
+		Node* node = NULL;
+		
+		// On prend toutes les arêtes de ANCIEN pointant vers un sommet de ARBRE
+		for (uint j = 0 ; j < arbre->vertex_count ; j++)
+			if (ancien->vertices[0]->isLinkedWith (arbre->vertices[j]))
+			{
+				cout << ancien->vertices[0]->getName() << " linked with " << arbre->vertices[j]->getName() << endl;
+				uint weight = ancien->vertices[0]->getEdgeWeight(arbre->vertices[j]);
+				
+				// On en sélectionne la minimale
+				if ( weight < min)
+				{
+					node = arbre->vertices[j];
+					min = weight;
+				}
+			}
+		
+		if (node != NULL)
+		{
+			// Le sommet reliant est ajouté (sans arête du tout)
+			arbre->addNode(node->getName());
+			// On ajoute l'arête reliante aux deux sommets
+			arbre->vertices[ arbre->vertex_count - 1 ]->addEdge(ancien->vertices[0], min);
+		}
+		ancien->removeNode (ancien->vertices[0]);
+		
+		cout << "Arbre min :" << endl;
+		arbre->showGraph();
+		
+		cout << "Ancien restant :" << endl;
+		ancien->showGraph();
+		cout << endl;
+	}
 }
+
