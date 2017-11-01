@@ -1,17 +1,7 @@
 # Devoir2Algo
 
 TODO :
-- Utilisation d'un masque à partir d'une image (pour le nuage de points) ;
-=> Valeur aléatoire et test si à l'intérieur du masque => Ajout
-- Tests sur points : si dans forme : verif si le nouveau point est trop proche d'un ancien (min(tout) > valeur) ;
-- Calcul des distances ultrametriques à partir des valeurs rentrées en dur dans l'arbre ;
-- DONC, la distance maximale sera = MAX(poids(arbre)) ;
-- Ne pas oublier que le graph est complet ;
-- Updater un tableau (n*n) de poids à chaque fois ;
 
-
-Notes & idées
-/**
 Prim :
 * ARBRE => On crée un arbre à partir du premier sommet (duquel on garde que le nom) ;
 * ANCIEN => On garde tous les autres sommets pour en faire un arbre (on garde les arrêtes mêmes si elles sont sur l'arbre couvrant min) ;
@@ -21,10 +11,10 @@ Prim :
 * Le sommet reliant est ajouté (sans arête du tout)
 * On ajoute l'arête reliante aux deux sommets
 * ===> Réitère jusqu'à plus rester de sommets
-*/
 
-/**
-Prim-Tas
+
+
+Prim-Tas :
 * ARBRE => On crée un arbre à partir du premier sommet (duquel on garde que le nom) ;
 * ANCIEN => On garde tous les autres sommets pour en faire un arbre (on garde les arrêtes mêmes si elles sont sur l'arbre couvrant min) ;
 * MIN_HEAP => Vide
@@ -33,10 +23,8 @@ Prim-Tas
 * On ajoute le sommet au sommet de MIN_HEAP à ARBRE (POP + remove de ANCIEN)
 * On ajoute l'arête reliante
 * ===> Réitère jusqu'à plus rester de sommets
-*/
 
-/**
-Kruskal
+Kruskal :
 * ARBRE => On crée un arbre vide;
 * LISTE => Liste des arêtes
 * Les trie dans l'ordre croissant
@@ -64,20 +52,27 @@ Kruskal
 * 		Si non :
 * 		Ajoute l'arête
 * ===> Réitère jusqu'à plus rester de sommets
-*/
 
-/**
+
 Kruskal-Foret
 * ARBRE => On crée un arbre vide;
 * 
 * TODO le reste
-*/
+
+Ultramétrique:
+* Utilisation d'un masque à partir d'une image (pour le nuage de points) ;
+=> Valeur aléatoire et test si à l'intérieur du masque => Ajout
+* Tests sur points : si dans forme : verif si le nouveau point est trop proche d'un ancien (min(tout) > valeur) ;
+* Calcul des distances ultrametriques à partir des valeurs rentrées en dur dans l'arbre ;
+* DONC, la distance maximale sera = MAX(poids(arbre)) ;
+* Ne pas oublier que le graph est complet ;
+* Updater un tableau (n*n) de poids à chaque fois ;
 
 
-// ETAPE 1 : Algorithme adapté
-// ETAPE 2 : Listage des fonctions à faire (Pour faire "propre")
-// ETAPE 3 : Faire fonctions
-// ETAPE 4 : Faire tests
+* ETAPE 1 : Algorithme adapté
+* ETAPE 2 : Listage des fonctions à faire (Pour faire "propre")
+* ETAPE 3 : Faire fonctions
+* ETAPE 4 : Faire tests
 
-// ETAPE ? : Ultra métrique à partir des notes
-// ETAPE ? : Représentation graphique
+* ETAPE ? : Ultra métrique à partir des notes
+* ETAPE ? : Représentation graphique
