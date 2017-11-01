@@ -39,7 +39,24 @@ void Node::addEdge(Node* node, int _weight)
 
 bool Node::isLinkedWith(Node* vertex)
 {
+	for (int i = 0 ; i < edge_count ; i++)
+	{
+		if (edges[i].vertex->getName() == vertex->getName())
+			return true;
+	}
+	
 	return false;
+}
+
+int Node::getEdgeWeight(Node* vertex)
+{
+	for (int i = 0 ; i < edge_count ; i++)
+	{
+		if (edges[i].vertex->getName() == vertex->getName())
+			return edges[i].weight;
+	}
+	
+	return 9999;
 }
 
 void Node::showNode () 

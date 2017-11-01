@@ -22,6 +22,7 @@ class Node {
 		 Node(string _name = "");
 		~Node();
 		 bool isLinkedWith(Node* vertex); // Renseigne la possibilité d'une liaison avec @vertex
+		 int getEdgeWeight(Node* vertex); // Renvoie le poids du noeud en commun avec @vertex, s'il existe)
 		 void addEdge(Node* node, int weight); // Ajoute un enfant au noeud
 		 void showNode ();
 		  
