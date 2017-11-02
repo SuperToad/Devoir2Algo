@@ -28,5 +28,6 @@ class Node {
 		  
 		 inline string getName() {return name;}
 		 inline uint getEdgeCount() {return edge_count;}
+		 inline Edge getEdge(int i) {return edges[i];}
 };
 

@@ -50,13 +50,15 @@ bool Node::isLinkedWith(Node* vertex)
 
 int Node::getEdgeWeight(Node* vertex)
 {
+	int weight_min = 9999;
 	for (int i = 0 ; i < edge_count ; i++)
 	{
 		if (edges[i].vertex->getName() == vertex->getName())
-			return edges[i].weight;
+			if (edges[i].weight < weight_min)
+				weight_min = edges[i].weight;
 	}
 	
-	return 9999;
+	return weight_min;
 }
 
 void Node::showNode () 

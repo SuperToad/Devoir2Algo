@@ -27,7 +27,7 @@ class Graph
 		//Graph* primHeap();
 		
 		// -- KRUSKAL
-		// Node::Edge* sortEdges();
-		// Graph* kruskalBasic();
+		bool sortEdges(const Node::Edge& first, const Node::Edge& second);
+		Graph* kruskalBasic();
 		// Graph* kruskalForest();
 };

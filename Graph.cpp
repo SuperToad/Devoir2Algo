@@ -1,4 +1,10 @@
 #include "Graph.hpp"
+#include <algorithm>
+#include <functional>
+#include <iostream>
+#include <iterator>
+#include <list>
+
 
 Graph::Graph()
 {
@@ -100,31 +106,38 @@ Graph* Graph::primBasic()
 	for (uint i = 0 ; i < vertex_count - 1 ; i++)
 	{
 		uint min = 9999;
-		Node* node = NULL;
+		Node* from = NULL;
+		Node* to = NULL;
 		
 		// On prend toutes les arêtes de ANCIEN pointant vers un sommet de ARBRE
-		for (uint j = 0 ; j < arbre->vertex_count ; j++)
-			if (ancien->vertices[0]->isLinkedWith (arbre->vertices[j]))
+		for (uint j = 0 ; j < ancien->vertex_count ; j++)
+		{
+			for (uint k = 0 ; k < arbre->vertex_count ; k++)
 			{
-				cout << ancien->vertices[0]->getName() << " linked with " << arbre->vertices[j]->getName() << endl;
-				uint weight = ancien->vertices[0]->getEdgeWeight(arbre->vertices[j]);
-				
-				// On en sélectionne la minimale
-				if ( weight < min)
+				if (ancien->vertices[j]->isLinkedWith (arbre->vertices[k]))
 				{
-					node = arbre->vertices[j];
-					min = weight;
+					cout << ancien->vertices[j]->getName() << " linked with " << arbre->vertices[k]->getName() << endl;
+					uint weight = ancien->vertices[j]->getEdgeWeight(arbre->vertices[k]);
+					
+					// On en sélectionne la minimale
+					if ( weight < min)
+					{
+						from = ancien->vertices[j];
+						to = arbre->vertices[k];
+						min = weight;
+					}
 				}
 			}
+		}
 		
-		if (node != NULL)
+		if (from != NULL)
 		{
 			// Le sommet reliant est ajouté (sans arête du tout)
-			arbre->addNode(node->getName());
+			arbre->addNode(from->getName());
 			// On ajoute l'arête reliante aux deux sommets
-			arbre->vertices[ arbre->vertex_count - 1 ]->addEdge(ancien->vertices[0], min);
+			arbre->vertices[ arbre->vertex_count - 1 ]->addEdge(to, min);
 		}
-		ancien->removeNode (ancien->vertices[0]);
+		ancien->removeNode (from);
 		
 		cout << "Arbre min :" << endl;
 		arbre->showGraph();
@@ -135,3 +148,29 @@ Graph* Graph::primBasic()
 	}
 }
 
+bool sortEdges(const Node::Edge& first, const Node::Edge& second)
+{
+	return (first.weight < second.weight);
+}
+
+Graph* Graph::kruskalBasic()
+{
+	Graph* arbre = new Graph();
+	
+	list<Node::Edge> edge_list;
+	
+	for (uint i = 0 ; i < vertex_count ; i++)
+		for (uint j = 0 ; j < vertices[i]->getEdgeCount() ; j++)
+			edge_list.push_back (vertices[i]->getEdge(j));
+	
+	/*list<Node::Edge>::iterator it;
+	
+	std::cout << "mylist contains:";
+	for (it=edge_list.begin(); it!=edge_list.end(); ++it)
+		std::cout << ' ' << *it;
+	std::cout << '\n';*/
+	
+	//edge_list.sort (sortEdges);
+	
+	
+}
