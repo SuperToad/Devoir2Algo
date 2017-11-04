@@ -37,7 +37,7 @@ void Node::addEdge(Node* node, int _weight)
 	}
 }
 
-bool Node::isLinkedWith(Node* vertex)
+bool Node::isLinkedWith (Node* vertex)
 {
 	for (int i = 0 ; i < edge_count ; i++)
 	{
@@ -48,7 +48,21 @@ bool Node::isLinkedWith(Node* vertex)
 	return false;
 }
 
-int Node::getEdgeWeight(Node* vertex)
+bool Node::DepthFirstSeach (Node* vertex)
+{
+	if (getName() == vertex->getName())
+			return true;
+	
+	for (int i = 0 ; i < edge_count ; i++)
+	{
+		if (edges[i].vertex->DepthFirstSeach(vertex))
+			return true;
+	}
+	
+	return false;
+}
+
+int Node::getEdgeWeight (Node* vertex)
 {
 	int weight_min = 9999;
 	for (int i = 0 ; i < edge_count ; i++)

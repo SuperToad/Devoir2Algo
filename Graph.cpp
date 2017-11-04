@@ -242,8 +242,8 @@ Graph* Graph::kruskalBasic()
 		if ((node1 == NULL) && (node2 != NULL))
 		{
 			cout << "Trouve : " << node2->getName() << endl;
-			arbre->addNode (node1->getName());
-			arbre->getNode(node2->getName())->addEdge(arbre->getNode(node1->getName()), edge_list.front().weight);
+			arbre->addNode (vertex1->getName());
+			arbre->getNode(node2->getName())->addEdge(arbre->getNode(vertex1->getName()), weight);
 		}
 		// Si non : Ajoute les deux sommets à ARBRE & l'arête
 		if ((node1 == NULL) && (node2 == NULL))
@@ -258,12 +258,19 @@ Graph* Graph::kruskalBasic()
 		// Pas trop compris cette partie la
 		// TODO : completer
 		// Si non : Ajoute le sommet et l'arête puis continue
-		// Si oui : Vérifie par un parcours en profondeur (par ses arêtes) si le sommet1 atteint sommet2 dans ARBRE
-			// Si trouvé : Ignore
-			// Sinon : Ajoute l'arête
 		if ((node1 != NULL) && (node2 != NULL))
 		{
 			cout << "2 noeuds trouves" << endl;
+			Node* from = arbre->getNode(node1->getName());
+			Node* to = arbre->getNode(node2->getName());
+			// Si oui : Vérifie par un parcours en profondeur (par ses arêtes) 
+				//si le sommet1 atteint sommet2 dans ARBRE
+			if ((from->DepthFirstSeach (to)) || (to->DepthFirstSeach (from)))
+				// Si trouvé : Ignore
+				cout << "OK" << endl;
+			else
+				// Sinon : Ajoute l'arête
+				from->addEdge(to, weight);
 		}
 		
 		cout << "Arbre min : " << endl;
