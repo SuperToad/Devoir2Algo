@@ -1,4 +1,7 @@
 #include "Graph.hpp"
+#include "ez-draw++.h"
+
+EZDraw ezDraw;
 
 int main()
 {
@@ -20,6 +23,10 @@ int main()
 	
 	graph->primBasic();
 	graph->kruskalBasic();
+	
+	// GUI tests
+	EZWindow win(400, 300, "Demo++ 0 : Hello World");
+	ezDraw.mainLoop();
 	
 	delete graph;
 	return 0;
