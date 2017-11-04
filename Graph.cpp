@@ -103,7 +103,7 @@ Graph* Graph::primBasic()
 	ancien->showGraph();
 	
 	// Réitère jusqu'à plus rester de sommets
-	for (uint i = 0 ; i < vertex_count - 1 ; i++)
+	while (arbre->vertex_count < vertex_count)
 	{
 		uint min = 9999;
 		Node* from = NULL;
@@ -148,29 +148,133 @@ Graph* Graph::primBasic()
 	}
 }
 
-bool sortEdges(const Node::Edge& first, const Node::Edge& second)
+void swap (Node::Edge* T, int a, int b)
 {
-	return (first.weight < second.weight);
+	Node::Edge tmp = T[a];
+	T[a] = T[b];
+	T[b] = tmp;
+}
+
+void quick_sort (Node::Edge* T, int g, int d)
+{
+	float v;
+	int a = g; int b = d;
+	if (g < d)
+	{
+		v = T[(g+d)/2].weight;
+		while (a <= b)
+		{
+			while (T[a].weight < v) a++;
+			while (T[b].weight > v) b--;
+			if (a <= b)
+			{
+				swap(T, a, b);
+				a++; b--;
+			}
+		}
+		quick_sort(T, g, b);
+		quick_sort(T, a, d);
+	}
 }
 
 Graph* Graph::kruskalBasic()
 {
+	cout << endl << "kruskalBasic :" << endl;
+	
+	// ARBRE => On crée un arbre vide
 	Graph* arbre = new Graph();
 	
+	// LISTE => Liste des arêtes
 	list<Node::Edge> edge_list;
 	
+	
+	// /!\ Attention toutes les aretes sont en doubles dans le tableau, et donc dans la liste
+	Node::Edge tab [getEdgeCount()*2];
+	int tab_size = 0;
 	for (uint i = 0 ; i < vertex_count ; i++)
 		for (uint j = 0 ; j < vertices[i]->getEdgeCount() ; j++)
-			edge_list.push_back (vertices[i]->getEdge(j));
+			tab[tab_size++] = vertices[i]->getEdge(j);
+			
+	for (uint i = 0 ; i < getEdgeCount()*2 ; i++)
+		cout << "Weight " << i << " : " << tab[i].weight << endl;
 	
-	/*list<Node::Edge>::iterator it;
+	// Les trie dans l'ordre croissant
+	quick_sort(tab, 0, getEdgeCount()*2);
 	
-	std::cout << "mylist contains:";
-	for (it=edge_list.begin(); it!=edge_list.end(); ++it)
-		std::cout << ' ' << *it;
-	std::cout << '\n';*/
+	for (uint i = 0 ; i < getEdgeCount()*2 ; i++)
+		cout << "Weight " << i << " : " << tab[i].weight << endl;
 	
-	//edge_list.sort (sortEdges);
+	for (uint i = 0 ; i < getEdgeCount()*2 ; i++)
+		edge_list.push_back (tab[i]);
+		
+	// 1ère arête
+	// Ajoute les deux sommets à ARBRE (sans arête)
+	arbre->addNode(edge_list.front().vertex->getName ());
+	edge_list.pop_front();
+	arbre->addNode(edge_list.front().vertex->getName ());
+	// Lie les deux par leur arête reliante
+	arbre->vertices[0]->addEdge(arbre->vertices[1], edge_list.front().weight);
+	// pop l'arête min de LISTE
+	edge_list.pop_front();
 	
+	arbre->showGraph();
+	
+	// ===> Réitère jusqu'à plus rester de sommets
+	while (arbre->vertex_count < vertex_count)
+	{
+		Node* node1 = arbre->getNode (edge_list.front().vertex->getName ());
+		Node* vertex1 = edge_list.front().vertex;
+		edge_list.pop_front();
+		
+		Node* node2 = arbre->getNode (edge_list.front().vertex->getName ());
+		Node* vertex2 = edge_list.front().vertex;
+		int weight = edge_list.front().weight;
+		edge_list.pop_front();
+		
+		// Vérif si UN SEUL des deux sommets de l'arête fait partie de ARBRE* 
+		// Si oui : Ajoute le nouveau sommet et l'arête reliante
+		if ((node1 != NULL) && (node2 == NULL))
+		{
+			cout << "Trouve : " << node1->getName() << endl;
+			arbre->addNode (vertex2->getName());
+			arbre->getNode(node1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
+		}
+		if ((node1 == NULL) && (node2 != NULL))
+		{
+			cout << "Trouve : " << node2->getName() << endl;
+			arbre->addNode (node1->getName());
+			arbre->getNode(node2->getName())->addEdge(arbre->getNode(node1->getName()), edge_list.front().weight);
+		}
+		// Si non : Ajoute les deux sommets à ARBRE & l'arête
+		if ((node1 == NULL) && (node2 == NULL))
+		{
+			cout << "Aucun trouve" << endl;
+			arbre->addNode (vertex1->getName());
+			arbre->addNode (vertex2->getName());
+			arbre->getNode(vertex1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
+		}
+		
+		// Vérif si les deux sommets de l'arête font partie de ARBRE
+		// Pas trop compris cette partie la
+		// TODO : completer
+		// Si non : Ajoute le sommet et l'arête puis continue
+		// Si oui : Vérifie par un parcours en profondeur (par ses arêtes) si le sommet1 atteint sommet2 dans ARBRE
+			// Si trouvé : Ignore
+			// Sinon : Ajoute l'arête
+		if ((node1 != NULL) && (node2 != NULL))
+		{
+			cout << "2 noeuds trouves" << endl;
+		}
+		
+		cout << "Arbre min : " << endl;
+		arbre->showGraph();
+	}
+	
+	
+	while (!edge_list.empty())
+	{
+		cout << "Pop front : " << edge_list.front().weight << endl;
+		edge_list.pop_front();
+	}
 	
 }
