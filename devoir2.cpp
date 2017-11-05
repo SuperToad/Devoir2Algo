@@ -7,15 +7,14 @@ using namespace std;
 
 EZDraw ezDraw;
 
-Graph* graph;
-
 class MyWindow : public EZWindow 
 {
 public:
-	MyWindow(int w,int h,const char *name)
-	: EZWindow(w,h,name)
+	MyWindow(int w,int h,const char *name, Graph* graph)
+	: EZWindow(w,h,name), initGraph (graph), drawGraph (graph)
 	{}
 	
+	Graph* initGraph;
 	Graph* drawGraph;
 
 	void trace_graph_basic ()
@@ -39,6 +38,7 @@ public:
 	
 	void trace_graph ()
 	{
+		int weight = 0;
 		for(int i = 0; i < drawGraph->getVertexCount(); i ++)
 		{
 			Node* vertex = drawGraph->getVertex(i);
@@ -52,10 +52,15 @@ public:
 					(vertex->getY() + to->getY())/2 - 20, oss.str());
 				
 				drawLine(vertex->getX(), vertex->getY(), to->getX(), to->getY());
+				
+				weight += vertex->getEdge(j).weight;
 			}
 			
 		}
-		
+		setColor (ez_red);
+		ostringstream oss;
+		oss << "Weight : " << weight;
+		drawText(EZ_TR, getWidth()-2,             1, oss.str());
 	}
 
 	void expose()
@@ -100,15 +105,15 @@ public:
 				ezDraw.quit();
 				break;
 			case XK_p  :
-				drawGraph = graph->primBasic();
+				drawGraph = initGraph->primBasic();
 				sendExpose();
 				break;
 			case XK_k  :
-				drawGraph = graph->kruskalBasic();
+				drawGraph = initGraph->kruskalBasic();
 				sendExpose();
 				break;
 			case XK_r  :
-				drawGraph = graph;
+				drawGraph = initGraph;
 				sendExpose();
 				break;
 		}
@@ -117,7 +122,7 @@ public:
 
 int main()
 {
-	graph = new Graph();
+	Graph* graph = new Graph();
 	graph->addNode("kek", 50, 100);
 	graph->addNode("ladylel", 500, 400);
 	graph->addNode("sigurdowhen?!", 40, 450);
@@ -138,8 +143,7 @@ int main()
 	graph->kruskalBasic();
 	
 	// GUI tests
-	MyWindow win(800, 600, "Algo Prim et Kuskal");
-	win.drawGraph = graph;
+	MyWindow win(800, 600, "Algo Prim et Kuskal", graph);
 	ezDraw.mainLoop();
 	
 	delete graph;
