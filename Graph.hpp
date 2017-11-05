@@ -16,7 +16,7 @@ class Graph
 	public:
 		Graph();
 		~Graph();
-		void addNode(string name);
+		void addNode(string name, int x, int y);
 		void addEdge(string name1, string name2, int weight);
 		void showGraph();
 		Node* getNode(string name);

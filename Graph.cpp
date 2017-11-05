@@ -18,10 +18,10 @@ Graph::~Graph()
 	delete[] vertices;
 }
 
-void Graph::addNode (string name)
+void Graph::addNode (string name, int x, int y)
 {
 	if (vertex_count < vertex_capacity)
-		vertices[vertex_count++] = new Node (name);
+		vertices[vertex_count++] = new Node (name, x, y);
 }
 
 void Graph::addEdge(string name1, string name2, int weight)
@@ -92,7 +92,7 @@ Graph* Graph::primBasic()
 	// ARBRE => On crée un arbre à partir du premier sommet (duquel on garde que le nom) ;
 	cout << "Arbre (init) :" << endl;
 	Graph* arbre = new Graph();
-	arbre->addNode(vertices[0]->getName());
+	arbre->addNode(vertices[0]->getName(), vertices[0]->getX(), vertices[0]->getY());
 	arbre->showGraph();
 	
 	//ANCIEN => On garde tous les autres sommets pour en faire un arbre (on garde les arrêtes mêmes si elles sont sur l'arbre couvrant min) ;
@@ -133,7 +133,7 @@ Graph* Graph::primBasic()
 		if (from != NULL)
 		{
 			// Le sommet reliant est ajouté (sans arête du tout)
-			arbre->addNode(from->getName());
+			arbre->addNode(from->getName(), from->getX(), from->getY());
 			// On ajoute l'arête reliante aux deux sommets
 			arbre->vertices[ arbre->vertex_count - 1 ]->addEdge(arbre->getNode(to->getName()), min);
 		}
@@ -211,9 +211,11 @@ Graph* Graph::kruskalBasic()
 		
 	// 1ère arête
 	// Ajoute les deux sommets à ARBRE (sans arête)
-	arbre->addNode(edge_list.front().vertex->getName ());
+	Node* vertex = edge_list.front().vertex;
+	arbre->addNode(vertex->getName (), vertex->getX(), vertex->getY());
 	edge_list.pop_front();
-	arbre->addNode(edge_list.front().vertex->getName ());
+	vertex = edge_list.front().vertex;
+	arbre->addNode(vertex->getName (), vertex->getX(), vertex->getY());
 	// Lie les deux par leur arête reliante
 	arbre->vertices[0]->addEdge(arbre->vertices[1], edge_list.front().weight);
 	// pop l'arête min de LISTE
@@ -238,21 +240,21 @@ Graph* Graph::kruskalBasic()
 		if ((node1 != NULL) && (node2 == NULL))
 		{
 			cout << "Trouve : " << node1->getName() << endl;
-			arbre->addNode (vertex2->getName());
+			arbre->addNode (vertex2->getName(), vertex2->getX(), vertex2->getY());
 			arbre->getNode(node1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
 		}
 		if ((node1 == NULL) && (node2 != NULL))
 		{
 			cout << "Trouve : " << node2->getName() << endl;
-			arbre->addNode (vertex1->getName());
+			arbre->addNode (vertex1->getName(), vertex1->getX(), vertex1->getY());
 			arbre->getNode(node2->getName())->addEdge(arbre->getNode(vertex1->getName()), weight);
 		}
 		// Si non : Ajoute les deux sommets à ARBRE & l'arête
 		if ((node1 == NULL) && (node2 == NULL))
 		{
 			cout << "Aucun trouve" << endl;
-			arbre->addNode (vertex1->getName());
-			arbre->addNode (vertex2->getName());
+			arbre->addNode (vertex1->getName(), vertex1->getX(), vertex1->getY());
+			arbre->addNode (vertex2->getName(), vertex2->getX(), vertex2->getY());
 			arbre->getNode(vertex1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
 		}
 		

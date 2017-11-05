@@ -22,17 +22,40 @@ public:
 	{
 		for(int i = 0; i < drawGraph->getVertexCount(); i ++)
 		{
-			if (drawGraph->getVertex(i)->getEdgeCount() < 1)
-				drawText(EZ_TL, i*100 + 10, i*150 + 10, drawGraph->getVertex(i)->getName());
+			Node* vertex = drawGraph->getVertex(i);
+			if (vertex->getEdgeCount() < 1)
+				drawText(EZ_TL, i*100 + 10, i*150 + 10, vertex->getName());
 			else
-				for (int j = 0 ; j < drawGraph->getVertex(i)->getEdgeCount() ; j++)
+				for (int j = 0 ; j < vertex->getEdgeCount() ; j++)
 				{
 					ostringstream oss;
 					oss << drawGraph->getVertex(i)->getName() << " -> " <<
 						drawGraph->getVertex(i)->getEdge(j).vertex->getName() << " : " << drawGraph->getVertex(i)->getEdge(j).weight;
 					drawText(EZ_TL, i*50 + 10, i*50 + j*20 + 10, oss.str());
+					
 				}
 		}
+	}
+	
+	void trace_graph ()
+	{
+		for(int i = 0; i < drawGraph->getVertexCount(); i ++)
+		{
+			Node* vertex = drawGraph->getVertex(i);
+			drawText(EZ_TL, vertex->getX(), vertex->getY(), vertex->getName());
+			for (int j = 0 ; j < vertex->getEdgeCount() ; j++)
+			{
+				Node* to = vertex->getEdge(j).vertex;
+				ostringstream oss;
+				oss << vertex->getEdge(j).weight;
+				drawText(EZ_TL, (vertex->getX() + to->getX())/2,
+					(vertex->getY() + to->getY())/2 - 20, oss.str());
+				
+				drawLine(vertex->getX(), vertex->getY(), to->getX(), to->getY());
+			}
+			
+		}
+		
 	}
 
 	void expose()
@@ -63,7 +86,7 @@ public:
 		drawText(EZ_BR, getWidth()-2, getHeight()-2, "Bottom\nRight");
 		// Les fonctions membres getWidth() et getHeight() permettent d'obtenir la largeur
 		// et hauteur actuelle de la fenetre courrante.*/
-		trace_graph_basic ();
+		trace_graph ();
 		setColor (ez_blue);
 		drawText(EZ_BL, 2, getHeight()-2, "P : Prim\nK : Kruskal\nR : Reset\nQ : Quit");
 	}
@@ -95,10 +118,11 @@ public:
 int main()
 {
 	graph = new Graph();
-	graph->addNode("kek");
-	graph->addNode("ladylel");
-	graph->addNode("sigurdowhen?!");
-	graph->addNode("bbq");
+	graph->addNode("kek", 50, 100);
+	graph->addNode("ladylel", 500, 400);
+	graph->addNode("sigurdowhen?!", 40, 450);
+	graph->addNode("bbq", 100, 300);
+	
 	graph->addEdge("kek","ladylel",999);
 	graph->addEdge("kek","sigurdowhen?!",420);
 	graph->addEdge("ladylel","sigurdowhen?!",1000);

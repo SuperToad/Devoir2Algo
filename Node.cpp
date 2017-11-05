@@ -1,8 +1,8 @@
 
 #include "Node.hpp"
 
-Node::Node(string _name)
-: name(_name), edge_capacity(0), edge_count(0)
+Node::Node(string _name, int _x, int _y)
+: name(_name), x(_x), y(_y), edge_capacity(0), edge_count(0)
 {
 	edges = NULL;
 }
