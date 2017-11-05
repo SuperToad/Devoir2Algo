@@ -21,6 +21,8 @@ class Graph
 		void showGraph();
 		Node* getNode(string name);
 		int getEdgeCount();
+		inline Node* getVertex(int i) {return vertices[i];}
+		inline uint getVertexCount() {return vertex_count;}
 		
 		// -- PRIM
 		Graph* primBasic();

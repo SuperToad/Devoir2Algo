@@ -135,7 +135,7 @@ Graph* Graph::primBasic()
 			// Le sommet reliant est ajouté (sans arête du tout)
 			arbre->addNode(from->getName());
 			// On ajoute l'arête reliante aux deux sommets
-			arbre->vertices[ arbre->vertex_count - 1 ]->addEdge(to, min);
+			arbre->vertices[ arbre->vertex_count - 1 ]->addEdge(arbre->getNode(to->getName()), min);
 		}
 		ancien->removeNode (from);
 		
@@ -146,6 +146,8 @@ Graph* Graph::primBasic()
 		ancien->showGraph();
 		cout << endl;
 	}
+	
+	return arbre;
 }
 
 void swap (Node::Edge* T, int a, int b)
@@ -283,5 +285,7 @@ Graph* Graph::kruskalBasic()
 		cout << "Pop front : " << edge_list.front().weight << endl;
 		edge_list.pop_front();
 	}
+	
+	return arbre;
 	
 }
