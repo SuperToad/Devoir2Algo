@@ -109,7 +109,7 @@ public:
 				sendExpose();
 				break;
 			case XK_k  :
-				drawGraph = initGraph->kruskalBasic();
+				drawGraph = initGraph->kruskalForest();
 				sendExpose();
 				break;
 			case XK_r  :
@@ -140,7 +140,7 @@ int main()
 	cout << "Nombre d'arrêtes : " << graph->getEdgeCount() << endl;
 	
 	graph->primBasic();
-	graph->kruskalBasic();
+	graph->kruskalForest();
 	
 	// GUI tests
 	MyWindow win(800, 600, "Algo Prim et Kuskal", graph);
