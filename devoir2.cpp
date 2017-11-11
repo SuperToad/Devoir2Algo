@@ -74,37 +74,13 @@ public:
 		setColor (ez_red);
 		ostringstream oss;
 		oss << "Weight : " << weight;
-		drawText(EZ_TR, getWidth()-2,             1, oss.str());
+		drawText(EZ_TR, getWidth()-2, 1, oss.str());
 	}
 
 	void expose()
 	{
 		setColor (ez_black);
 		setFont(1);
-		/*for(int i = 0; i <= 3; i++)
-		{
-			setFont(i); // Choix d'une des 4 polices de caracteres differente a chaque tour de boucle.
-			ostringstream oss; // On cree un std::ostringstream.
-			oss << "Fonte numero " << i ; // On ecrit dedans.
-			drawText(
-				EZ_TC, // Texte aligne en haut et centre horizontalement.
-				getWidth()/2, 90 + 25 * i, // Position de l'ecriture.
-				oss.str() // On recupere le contenu de oss sous forme d'une std::string qu'on
-				);          // transmet a drawText().
-		}
-
-		setFont(0); // Choix de la police de caracteres par defaut (0).
-		setColor(ez_red);
-		drawText(EZ_TL,            2,             1, "Top\nLeft");
-		drawText(EZ_TC, getWidth()/2,             1, "Top\nCenter");
-		drawText(EZ_TR, getWidth()-2,             1, "Top\nRight");
-		drawText(EZ_ML,            2, getHeight()/2, "Middle\nLeft");
-		drawText(EZ_MR, getWidth()-2, getHeight()/2, "Middle\nRight");
-		drawText(EZ_BL,            2, getHeight()-2, "Bottom\nLeft");
-		drawText(EZ_BC, getWidth()/2, getHeight()-2, "Bottom\nCenter");
-		drawText(EZ_BR, getWidth()-2, getHeight()-2, "Bottom\nRight");
-		// Les fonctions membres getWidth() et getHeight() permettent d'obtenir la largeur
-		// et hauteur actuelle de la fenetre courrante.*/
 		trace_graph ();
 		setColor (ez_blue);
 		drawText(EZ_BL, 2, getHeight()-2, "P : Prim\nK : Kruskal\nR : Reset\nQ : Quit");

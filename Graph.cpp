@@ -319,7 +319,7 @@ Graph* Graph::kruskalForest()
 	
 	for (uint i = 0 ; i < vertex_count ; i++)
 	{
-		fathers[i] = i;//vertices[i];
+		fathers[i] = i;
 		depth[i] = 1;
 	}
 	
@@ -362,36 +362,52 @@ Graph* Graph::kruskalForest()
 		int minDepth = (depth[vertex2number] <= depth[vertex1number]? vertex2number:vertex1number);
 		Node* son = arbre->getNode((minDepth == vertex1number? vertex1:vertex2)->getName() );
 		Node* father = arbre->getNode((maxDepth == vertex1number? vertex1:vertex2)->getName() );
+		int son_root = arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName())));
+		int father_root = arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName())));
 		
-		if ( arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName()))) 
-			!= arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName()))) )
+		cout << weight << son->getName() << " root (son): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName()))) << endl;
+		cout << weight << father->getName() << " root (father): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName()))) << endl;
+		
+		// Verification de la prescence de boucle
+		if ( son_root != father_root )
 		{
-			cout << son->getName() << " root : " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName()))) << endl;
-			cout << father->getName() << " root : " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName()))) << endl;
 			
-			if (vertex2number >= 0)
+			/*if (vertex2number >= 0)
 			{
 				fathers[arbre->getNodeNumber (arbre->getNode(son->getName()))] = arbre->getNodeNumber (arbre->getNode(father->getName()));
 				depth [maxDepth] = (depth[vertex2number] > depth[vertex1number] + 1? 
 					depth[vertex2number]:depth[vertex1number] + 1);
-			}
+			}*/
 		
 			arbre->getNode(father->getName())->addEdge(arbre->getNode(son->getName()), weight );
 			edge_count++;
+			
+			if ( depth[father_root] >= depth[son_root])
+				fathers[son_root] = father_root;
+			else
+			{
+				int tmp = depth[father_root];
+				depth[father_root] = depth[son_root];
+				depth[son_root] = tmp;
+				fathers[son_root] = father_root;
+			}
+			if (depth[son_root] + 1 > depth[father_root])
+				depth[father_root] = depth[son_root] + 1;
+			
 		}
 		else
 			cout << "Boucle detectee" << endl;
 		
 		
 		/*cout << "Arbre min : " << endl;
-		arbre->showGraph();
+		arbre->showGraph();*/
 		
 		cout << "Tabs : " << endl;
 		for (uint i = 0 ; i < vertex_count ; i++)
 			cout << arbre->getVertex(i)->getName() << " : Pere : " << fathers[i]
 				<< " : Depth : " << depth[i]
 				<< " : Root : " << arbre->getRoot (fathers, i) << endl;
-		cout << endl;*/
+		cout << endl;
 	}
 	
 	
