@@ -20,7 +20,7 @@ class GrayImage
 		GrayImage(const GrayImage &source);
 		void clear(ubyte gris);
 		inline ubyte& pixel(ushort x, ushort y) const;
-		inline ubyte& pixel(ushort x, ushort y);
+		inline ubyte& pixel(ushort x, ushort y) { return array[y*width + x]; }
 		inline const ubyte& operator() (ushort x, ushort y) const;
 		inline ubyte& operator() (ushort x, ushort y);
 		void rectangle(ushort x, ushort y, ushort w, ushort h, ubyte color);

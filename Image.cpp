@@ -5,9 +5,6 @@
 
 using namespace std;
 
-const char *identifier = "duffaut_j";
-const char *informations = "Le TGA j ai pas vraiment compris...";
-
 // skip_line(is) permet de sauter toute une série d'octets de "is" jusqu'à trouver un '\n'
 static void skip_line(istream& is)
 {
@@ -65,8 +62,8 @@ void GrayImage::clear (ubyte gris)
 
 inline ubyte& GrayImage::pixel(ushort x, ushort y) const
 	{ return array[y*width + x]; }
-inline ubyte& GrayImage::pixel(ushort x, ushort y)
-	{ return array[y*width + x]; }
+/*inline ubyte& GrayImage::pixel(ushort x, ushort y)
+	{ return array[y*width + x]; }*/
 
 inline const ubyte& GrayImage::operator() (ushort x, ushort y) const
 	{ return array[y*width + x]; }

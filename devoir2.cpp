@@ -8,6 +8,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <fstream>
+#include <cmath>
 
 typedef unsigned short int ushort;
 typedef unsigned int uint;
@@ -52,15 +53,18 @@ public:
 		for(int i = 0; i < drawGraph->getVertexCount(); i ++)
 		{
 			Node* vertex = drawGraph->getVertex(i);
+			setColor (ez_black);
 			drawText(EZ_TL, vertex->getX(), vertex->getY(), vertex->getName());
 			for (int j = 0 ; j < vertex->getEdgeCount() ; j++)
 			{
 				Node* to = vertex->getEdge(j).vertex;
 				ostringstream oss;
 				oss << vertex->getEdge(j).weight;
+				setColor (ez_red);
 				drawText(EZ_TL, (vertex->getX() + to->getX())/2,
 					(vertex->getY() + to->getY())/2 - 20, oss.str());
-				
+					
+				setColor (ez_grey);
 				drawLine(vertex->getX(), vertex->getY(), to->getX(), to->getY());
 				
 				weight += vertex->getEdge(j).weight;
@@ -130,6 +134,44 @@ public:
 	}
 };
 
+Graph* generate_graph (GrayImage *image)
+{
+	Graph* graph = new Graph();
+	
+	char name_c = 'A';
+	
+	while (graph->getVertexCount() < 10)
+	{
+		int randx = EZDraw::random (image->getWidth ());
+		int randy = EZDraw::random (image->getHeight ());
+		
+		if ((int)image->pixel (randx, randy) < 50)
+		{
+			stringstream name;
+			name << name_c;
+			graph->addNode(name.str(), randx, randy);
+			
+			name_c++;
+		}
+	}
+	
+	for(int i = 0; i < graph->getVertexCount(); i++)
+		for(int j = i; j < graph->getVertexCount(); j++)
+			if ( graph->getVertex(i)->getName() != graph->getVertex(j)->getName() )
+			{
+				double x1 = graph->getVertex(i)->getX ();
+				double y1 = graph->getVertex(i)->getY ();
+				double x2 = graph->getVertex(j)->getX ();
+				double y2 = graph->getVertex(j)->getY ();
+				
+				double dist = sqrt((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
+				graph->addEdge(graph->getVertex(i)->getName(),
+					graph->getVertex(j)->getName(), dist);
+			}
+	
+	return graph;
+}
+
 int main()
 {
 	Graph* graph = new Graph();
@@ -157,9 +199,10 @@ int main()
 	img.clear(250);
 	img.rectangle(5, 6, 10, 40, 0);
 	img.fillRectangle(55, 56, 100, 200, 10);
+	img.fillRectangle(305, 250, 150, 200, 10);
 
 	// Test d ecriture
-	ofstream writeTest("rectangles.pgm");
+	ofstream writeTest("image.pgm");
 	img.writePGM(writeTest);
 	
 	// Test de lecture
@@ -174,14 +217,15 @@ int main()
 	
 	cout << "Width : " << image->getWidth() << ", Height : " << image->getHeight() << endl;
 	
-	for(ushort i = 0; i < image->getWidth(); i++)
+	/*for(ushort i = 0; i < image->getWidth(); i++)
 		for(ushort j = 0; j < image->getHeight(); j++)
 			if ((int)image->pixel (i, j) < 50)
-				cout << "Pixel at " << i << ", " << j << " is at " << (int)image->pixel (i, j) << endl;
+				cout << "Pixel at " << i << ", " << j << " is at " << (int)image->pixel (i, j) << endl;*/
 	
+	Graph* new_graph = generate_graph (image);
 	
 	// GUI tests
-	MyWindow win(800, 600, "Algo Prim et Kuskal", graph);
+	MyWindow win(800, 600, "Algo Prim et Kuskal", new_graph);
 	ezDraw.mainLoop();
 	
 	delete graph;

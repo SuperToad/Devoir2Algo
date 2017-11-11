@@ -364,7 +364,11 @@ Graph* Graph::kruskalForest()
 		Node* father = arbre->getNode((maxDepth == vertex1number? vertex1:vertex2)->getName() );
 		
 		if ( arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName()))) 
-				!= arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName()))) ){
+			!= arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName()))) )
+		{
+			cout << son->getName() << " root : " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName()))) << endl;
+			cout << father->getName() << " root : " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName()))) << endl;
+			
 			if (vertex2number >= 0)
 			{
 				fathers[arbre->getNodeNumber (arbre->getNode(son->getName()))] = arbre->getNodeNumber (arbre->getNode(father->getName()));
@@ -375,9 +379,11 @@ Graph* Graph::kruskalForest()
 			arbre->getNode(father->getName())->addEdge(arbre->getNode(son->getName()), weight );
 			edge_count++;
 		}
+		else
+			cout << "Boucle detectee" << endl;
 		
 		
-		cout << "Arbre min : " << endl;
+		/*cout << "Arbre min : " << endl;
 		arbre->showGraph();
 		
 		cout << "Tabs : " << endl;
@@ -385,7 +391,7 @@ Graph* Graph::kruskalForest()
 			cout << arbre->getVertex(i)->getName() << " : Pere : " << fathers[i]
 				<< " : Depth : " << depth[i]
 				<< " : Root : " << arbre->getRoot (fathers, i) << endl;
-		cout << endl;
+		cout << endl;*/
 	}
 	
 	
