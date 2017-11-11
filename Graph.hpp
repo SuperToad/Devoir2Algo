@@ -23,6 +23,7 @@ class Graph
 		int getEdgeCount();
 		inline Node* getVertex(int i) {return vertices[i];}
 		inline uint getVertexCount() {return vertex_count;}
+		int getRoot(int* tab, int index);
 		
 		// -- PRIM
 		Graph* primBasic();

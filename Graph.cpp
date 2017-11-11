@@ -294,6 +294,13 @@ Graph* Graph::kruskalBasic()
 	
 }
 
+int Graph::getRoot(int* tab, int index)
+{
+    if (tab[index] == index)
+        return tab[index];
+    return getRoot(tab, tab[index]);
+}
+
 Graph* Graph::kruskalForest()
 {
 	cout << endl << "kruskalForest :" << endl;
@@ -305,14 +312,14 @@ Graph* Graph::kruskalForest()
 	list<Node::Edge> edge_list;
 	
 	// FATHERS => Tableau des pères
-	Node* fathers [vertex_count];
+	int fathers [vertex_count];
 	
 	// DEPTH => Profondeur des sommets
 	int depth [vertex_count];
 	
 	for (uint i = 0 ; i < vertex_count ; i++)
 	{
-		fathers[i] = vertices[i];
+		fathers[i] = i;//vertices[i];
 		depth[i] = 1;
 	}
 	
@@ -334,93 +341,50 @@ Graph* Graph::kruskalForest()
 	
 	for (uint i = 0 ; i < getEdgeCount()*2 ; i++)
 		edge_list.push_back (tab[i]);
-		
-	// 1ère arête
-	// Ajoute les deux sommets à ARBRE (sans arête)
-	/*Node* vertex = edge_list.front().vertex;
-	arbre->addNode(vertex->getName (), vertex->getX(), vertex->getY());
-	edge_list.pop_front();
-	vertex = edge_list.front().vertex;
-	arbre->addNode(vertex->getName (), vertex->getX(), vertex->getY());
-	// Lie les deux par leur arête reliante
-	arbre->vertices[0]->addEdge(arbre->vertices[1], edge_list.front().weight);
-	// pop l'arête min de LISTE
-	edge_list.pop_front();
 	
-	fathers[1] = vertex;
-	depth [1] = (depth[1] > depth[0] + 1? 
-		depth[1]:depth[0] + 1);
+	// Ajoute dans l'arbre les sommets du graphe, sans aretes
+	for (uint i = 0 ; i < vertex_count ; i++)
+		arbre->addNode (getVertex(i)->getName(), getVertex(i)->getX(), getVertex(i)->getY());
 	
-	arbre->showGraph();*/
-	
-	// ===> Réitère jusqu'à plus rester de sommets
-	while (arbre->vertex_count < vertex_count)
+	uint edge_count = 0;
+	while (edge_count < vertex_count - 1)
 	{
-		Node* node1 = arbre->getNode (edge_list.front().vertex->getName ());
 		Node* vertex1 = edge_list.front().vertex;
 		edge_list.pop_front();
 		
-		Node* node2 = arbre->getNode (edge_list.front().vertex->getName ());
 		Node* vertex2 = edge_list.front().vertex;
 		int weight = edge_list.front().weight;
 		edge_list.pop_front();
 		
 		int vertex1number = getNodeNumber (vertex1);
 		int vertex2number = getNodeNumber (vertex2);
-		if (vertex2number >= 0)
-		{
-			fathers[vertex2number] = vertex1;
-			depth [vertex2number] = (depth[vertex2number] > depth[vertex1number] + 1? 
-				depth[vertex2number]:depth[vertex1number] + 1);
+		int maxDepth = (depth[vertex2number] > depth[vertex1number]? vertex2number:vertex1number);
+		int minDepth = (depth[vertex2number] <= depth[vertex1number]? vertex2number:vertex1number);
+		Node* son = arbre->getNode((minDepth == vertex1number? vertex1:vertex2)->getName() );
+		Node* father = arbre->getNode((maxDepth == vertex1number? vertex1:vertex2)->getName() );
+		
+		if ( arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName()))) 
+				!= arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName()))) ){
+			if (vertex2number >= 0)
+			{
+				fathers[arbre->getNodeNumber (arbre->getNode(son->getName()))] = arbre->getNodeNumber (arbre->getNode(father->getName()));
+				depth [maxDepth] = (depth[vertex2number] > depth[vertex1number] + 1? 
+					depth[vertex2number]:depth[vertex1number] + 1);
+			}
+		
+			arbre->getNode(father->getName())->addEdge(arbre->getNode(son->getName()), weight );
+			edge_count++;
 		}
 		
-		// Vérif si UN SEUL des deux sommets de l'arête fait partie de ARBRE* 
-		// Si oui : Ajoute le nouveau sommet et l'arête reliante
-		if ((node1 != NULL) && (node2 == NULL))
-		{
-			cout << "Trouve : " << node1->getName() << endl;
-			arbre->addNode (vertex2->getName(), vertex2->getX(), vertex2->getY());
-			arbre->getNode(node1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
-		}
-		if ((node1 == NULL) && (node2 != NULL))
-		{
-			cout << "Trouve : " << node2->getName() << endl;
-			arbre->addNode (vertex1->getName(), vertex1->getX(), vertex1->getY());
-			arbre->getNode(node2->getName())->addEdge(arbre->getNode(vertex1->getName()), weight);
-		}
-		// Si non : Ajoute les deux sommets à ARBRE & l'arête
-		if ((node1 == NULL) && (node2 == NULL))
-		{
-			cout << "Aucun trouve" << endl;
-			arbre->addNode (vertex1->getName(), vertex1->getX(), vertex1->getY());
-			arbre->addNode (vertex2->getName(), vertex2->getX(), vertex2->getY());
-			arbre->getNode(vertex1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
-		}
-		
-		// Vérif si les deux sommets de l'arête font partie de ARBRE
-		// Si non : Ajoute le sommet et l'arête puis continue
-		if ((node1 != NULL) && (node2 != NULL))
-		{
-			cout << "2 noeuds trouves" << endl;
-			Node* from = arbre->getNode(node1->getName());
-			Node* to = arbre->getNode(node2->getName());
-			// Si oui : Vérifie par un parcours en profondeur (par ses arêtes) 
-				//si le sommet1 atteint sommet2 dans ARBRE
-			if ((from->DepthFirstSeach (to)) || (to->DepthFirstSeach (from)))
-				// Si trouvé : Ignore
-				cout << "OK" << endl;
-			else
-				// Sinon : Ajoute l'arête
-				from->addEdge(to, weight);
-		}
 		
 		cout << "Arbre min : " << endl;
 		arbre->showGraph();
 		
 		cout << "Tabs : " << endl;
 		for (uint i = 0 ; i < vertex_count ; i++)
-			cout << vertices[i]->getName() << " : Pere : " << fathers[i]->getName() 
-				<< " : Depth : " << depth[i] << endl;
+			cout << arbre->getVertex(i)->getName() << " : Pere : " << fathers[i]
+				<< " : Depth : " << depth[i]
+				<< " : Root : " << arbre->getRoot (fathers, i) << endl;
 		cout << endl;
 	}
 	
