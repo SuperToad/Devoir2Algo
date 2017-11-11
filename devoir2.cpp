@@ -1,7 +1,17 @@
 #include "Graph.hpp"
+#include "Image.h"
 #include "ez-draw++.h"
 #include <sstream>
 #include <string>
+
+#include <stdio.h>
+#include <iostream>
+#include <stdexcept>
+#include <fstream>
+
+typedef unsigned short int ushort;
+typedef unsigned int uint;
+typedef unsigned char ubyte;
 
 using namespace std;
 
@@ -141,6 +151,34 @@ int main()
 	
 	graph->primBasic();
 	graph->kruskalForest();
+	
+	// Test de creation d image
+	GrayImage img(400, 500);
+	img.clear(250);
+	img.rectangle(5, 6, 10, 40, 0);
+	img.fillRectangle(55, 56, 100, 200, 10);
+
+	// Test d ecriture
+	ofstream writeTest("rectangles.pgm");
+	img.writePGM(writeTest);
+	
+	// Test de lecture
+	ifstream readTest("image.pgm");
+	GrayImage *image = NULL;
+	image = image->readPGM(readTest);
+	//image->rectangle(15, 6, 40, 20, 90);
+	//image->fillRectangle(65, 56, 100, 200, 180);
+	
+	ofstream writeTestlol("testW.pgm");
+	image->writePGM(writeTestlol);
+	
+	cout << "Width : " << image->getWidth() << ", Height : " << image->getHeight() << endl;
+	
+	for(ushort i = 0; i < image->getWidth(); i++)
+		for(ushort j = 0; j < image->getHeight(); j++)
+			if ((int)image->pixel (i, j) < 50)
+				cout << "Pixel at " << i << ", " << j << " is at " << (int)image->pixel (i, j) << endl;
+	
 	
 	// GUI tests
 	MyWindow win(800, 600, "Algo Prim et Kuskal", graph);
