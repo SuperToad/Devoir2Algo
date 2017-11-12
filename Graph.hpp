@@ -12,7 +12,6 @@ class Graph
 		
 		void addNode(Node* node);
 		void removeNode(Node* node);
-		int getNodeNumber(Node* node);
 	public:
 		Graph();
 		~Graph();
@@ -21,6 +20,7 @@ class Graph
 		void showGraph();
 		Node* getNode(string name);
 		int getEdgeCount();
+		int getNodeNumber(Node* node);
 		inline Node* getVertex(int i) {return vertices[i];}
 		inline uint getVertexCount() {return vertex_count;}
 		int getRoot(int* tab, int index);
