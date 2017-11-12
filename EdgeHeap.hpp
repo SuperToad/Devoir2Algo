@@ -1,27 +1,32 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#ifndef EDGEHEAP_H
+#define EDGEHEAP_H
+
 #include "Node.hpp"
 
 typedef unsigned int uint;
+typedef Node::Edge Edge;
 
 #define MAX_CAPACITY 1024
 
 class EdgeHeap{
 	private:
 		Edge* heap;
-		int heap_size;
-		int heap_capacity;
+		uint heap_size;
+		uint heap_capacity;
 		
-		void deleteElement(int index);
+		int lowerChild(uint i, uint n);
+		int deleteElement(uint index);
 	public:
-		EdgeHeap(Edge* _heap, int _heap_size);
+		EdgeHeap(Edge* _heap = NULL, uint _heap_size = 0);
 		~EdgeHeap();
 		
-		void push(Edge edge);
+		int push(Edge edge);
 		Edge pop();
 		Edge head();
-		void organize(uint i, uint n);
+		int organize(uint i, uint n);
 		void displayHeap();
+
+		inline bool isEmpty() {return (heap_size == 0);}
 };
 
+#endif
