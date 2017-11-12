@@ -18,9 +18,9 @@ int reorganiserTasDesc(uint i, uint n)
 // Échange simple entre deux arcs
 void echange(Edge* a, Edge* b)
 {
-	Edge* c = a;
-	a = b;
-	b = c;
+	Edge c = *a;
+	*a = *b;
+	*b = c;
 }
 
 // Retourne -1 si aucun enfant ; i*2 si premier et i*2+1 si deuxième.
