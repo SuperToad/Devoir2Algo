@@ -95,11 +95,11 @@ public:
 				ezDraw.quit();
 				break;
 			case XK_p  :
-				drawGraph = initGraph->primBasic();
+				drawGraph = initGraph->primHeap();
 				sendExpose();
 				break;
 			case XK_k  :
-				drawGraph = initGraph->kruskalForest();
+				drawGraph = initGraph->kruskalBasic();
 				sendExpose();
 				break;
 			case XK_r  :
@@ -167,11 +167,11 @@ int main()
 	graph->showGraph();
 	cout << "Nombre d'arrêtes : " << graph->getEdgeCount() << endl;
 	
-	graph->primBasic();
-	graph->kruskalForest();
+	//graph->primHeap();
+	//graph->kruskalForest();
 	
 	// Test de creation d image
-	GrayImage img(400, 500);
+	/*GrayImage img(400, 500);
 	img.clear(250);
 	img.rectangle(5, 6, 10, 40, 0);
 	img.fillRectangle(55, 56, 100, 200, 10);
@@ -179,7 +179,7 @@ int main()
 
 	// Test d ecriture
 	ofstream writeTest("image.pgm");
-	img.writePGM(writeTest);
+	img.writePGM(writeTest);*/
 	
 	// Test de lecture
 	ifstream readTest("image.pgm");

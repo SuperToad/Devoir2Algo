@@ -1,3 +1,5 @@
+#ifndef GRAPH_H
+#define GRAPH_H
 
 #include "Node.hpp"
 
@@ -21,16 +23,19 @@ class Graph
 		Node* getNode(string name);
 		int getEdgeCount();
 		int getNodeNumber(Node* node);
+		int getNodeNumber(string name);
 		inline Node* getVertex(int i) {return vertices[i];}
 		inline uint getVertexCount() {return vertex_count;}
 		int getRoot(int* tab, int index);
 		
 		// -- PRIM
 		Graph* primBasic();
-		//Graph* primHeap();
+		Graph* primHeap();
 		
 		// -- KRUSKAL
 		bool sortEdges(const Node::Edge& first, const Node::Edge& second);
 		Graph* kruskalBasic();
 		Graph* kruskalForest();
 };
+
+#endif

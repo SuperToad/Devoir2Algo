@@ -1,4 +1,5 @@
 #include "Graph.hpp"
+#include "EdgeHeap.hpp"
 #include <algorithm>
 #include <functional>
 #include <iostream>
@@ -85,6 +86,17 @@ int Graph::getNodeNumber(Node* node)
 	return number;
 }
 
+int Graph::getNodeNumber(string name)
+{
+    int result = -1;
+    
+    for (int i = 0; (i < vertex_count) && (result == -1); i++)
+        if (vertices[i]->getName() == name)
+            result =  i;
+    
+    return result;
+}
+
 Graph* Graph::primBasic()
 {
 	cout << endl << "primBasic :" << endl;
@@ -150,6 +162,71 @@ Graph* Graph::primBasic()
 	return arbre;
 }
 
+Graph* Graph::primHeap()
+{
+    int vertex_index = 0;
+    cout << endl << "primHeap :" << endl;
+   
+    // ARBRE => On crée un arbre à partir du premier sommet (duquel on garde que le nom) ;
+    cout << "Arbre (init) :" << endl;
+    Graph* arbre = new Graph();
+    arbre->addNode(vertices[vertex_index]->getName(), vertices[vertex_index]->getX(),
+                                                      vertices[vertex_index]->getY());
+    arbre->showGraph();
+   
+    //ANCIEN => On garde tous les autres sommets pour en faire un arbre (on garde les arrêtes mêmes si elles sont sur l'arbre couvrant min) ;
+    cout << "Ancien (init) :" << endl;
+    Graph* ancien = new Graph();
+    for (int i = 1 ; i < vertex_count ; i++)
+        ancien->addNode(vertices[i]);
+    ancien->showGraph();
+   
+    // Initialisation du tas_min d'arcs
+    cout << "EdgeHeap (init) :" << endl;
+    EdgeHeap* e_heap = new EdgeHeap();
+ 
+    while (arbre->vertex_count < vertex_count || !e_heap->isEmpty())
+    {
+        // Ajout de toutes les aretes du dernier sommet ajouté
+        // Seulement si le sommet associé n'est PAS dans ARBRE
+        if (vertex_index >= 0)
+            for (uint i = 0 ; i < vertices[vertex_index]->getEdgeCount() ; i++)
+                if (arbre->getNodeNumber(vertices[vertex_index]->getEdge(i).vertex->getName()) < 0)
+                    e_heap->push(vertices[vertex_index]->getEdge(i));
+        e_heap->displayHeap();
+        // Sortie du sommet de e_heap
+        Node::Edge to_add = e_heap->pop();
+        // Test si le vertex associé est déjà présent dans ARBRE
+        vertex_index = arbre->getNodeNumber(to_add.vertex->getName());
+        // to_add.origin->showNode();
+        // to_add.vertex->showNode();
+        if (vertex_index < 0)
+        {
+            cout << vertex_index << endl;
+            vertex_index = getNodeNumber(to_add.vertex->getName());
+            cout << vertices[vertex_index]->getName() << "["
+                 << vertices[vertex_index]->getX() << ","
+                 << vertices[vertex_index]->getY() << "]" << endl;
+            arbre->addNode(vertices[vertex_index]->getName(),
+                           vertices[vertex_index]->getX(),
+                           vertices[vertex_index]->getY());
+            cout << "vertex_index" << endl;
+            arbre->addEdge(to_add.origin->getName(), to_add.vertex->getName(), to_add.weight);
+            cout << vertex_index << endl;
+            ancien->removeNode(vertices[vertex_index]);
+        }
+        else
+            vertex_index = -1;
+        arbre->showGraph();
+        cout << endl;
+    }
+ 
+    cout << "Arbre min :" << endl;
+    arbre->showGraph();
+ 
+    return arbre;
+}
+
 void swap (Node::Edge* T, int a, int b)
 {
 	Node::Edge tmp = T[a];
@@ -189,28 +266,35 @@ Graph* Graph::kruskalBasic()
 	// LISTE => Liste des arêtes
 	list<Node::Edge> edge_list;
 	
-	// /!\ Attention toutes les aretes sont en doubles dans le tableau, et donc dans la liste
 	Node::Edge tab [getEdgeCount()*2];
 	int tab_size = 0;
 	for (uint i = 0 ; i < vertex_count ; i++)
 		for (uint j = 0 ; j < vertices[i]->getEdgeCount() ; j++)
-			tab[tab_size++] = vertices[i]->getEdge(j);
+		{
+			bool present = false;
+			// Verification de la presence de l'arete inverse
+			for (uint k = 0 ; k < tab_size ; k++)
+				if ( (tab[k].vertex->getName() == vertices[i]->getEdge(j).origin->getName()) 
+						&& (tab[k].origin->getName() == vertices[i]->getEdge(j).vertex->getName()) )
+							present = true;
+
+			if (!present)
+					tab[tab_size++] = vertices[i]->getEdge(j);
+		}
 			
 	/*for (uint i = 0 ; i < getEdgeCount()*2 ; i++)
 		cout << "Weight " << i << " : " << tab[i].weight << endl;*/
 	
 	// Les trie dans l'ordre croissant
-	quick_sort(tab, 0, getEdgeCount()*2 - 1);
+	quick_sort(tab, 0, getEdgeCount() - 1);
 	
-	for (uint i = 0 ; i < getEdgeCount()*2 ; i++)
+	for (uint i = 0 ; i < getEdgeCount() ; i++)
 		cout << "Weight " << i << " : " << tab[i].weight << endl;
 	
-	cout << "Max : " << edge_list.max_size () << endl;
-	
-	for (uint i = 0 ; i < getEdgeCount()*2 ; i++)
+	for (uint i = 0 ; i < getEdgeCount() ; i++)
 		edge_list.push_back (tab[i]);
 		
-	// 1ère arête
+	/*// 1ère arête
 	// Ajoute les deux sommets à ARBRE (sans arête)
 	Node* vertex = edge_list.front().vertex;
 	arbre->addNode(vertex->getName (), vertex->getX(), vertex->getY());
@@ -222,14 +306,15 @@ Graph* Graph::kruskalBasic()
 	// pop l'arête min de LISTE
 	edge_list.pop_front();
 	
-	arbre->showGraph();
+	arbre->showGraph();*/
 	
 	// ===> Réitère jusqu'à plus rester de sommets
-	while (arbre->vertex_count < vertex_count)
+	uint edge_count = 0;
+	while (edge_count < vertex_count -1)
 	{
-		Node* node1 = arbre->getNode (edge_list.front().vertex->getName ());
-		Node* vertex1 = edge_list.front().vertex;
-		edge_list.pop_front();
+		Node* node1 = arbre->getNode (edge_list.front().origin->getName ());
+		Node* vertex1 = edge_list.front().origin;
+		//edge_list.pop_front();
 		
 		Node* node2 = arbre->getNode (edge_list.front().vertex->getName ());
 		Node* vertex2 = edge_list.front().vertex;
@@ -242,40 +327,53 @@ Graph* Graph::kruskalBasic()
 		{
 			cout << "Trouve : " << node1->getName() << endl;
 			arbre->addNode (vertex2->getName(), vertex2->getX(), vertex2->getY());
-			arbre->getNode(node1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
+			//arbre->getNode(node1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
+			arbre->addEdge (node1->getName(), vertex2->getName(), weight);
+			edge_count++;
 		}
-		if ((node1 == NULL) && (node2 != NULL))
+		else if ((node1 == NULL) && (node2 != NULL))
 		{
 			cout << "Trouve : " << node2->getName() << endl;
 			arbre->addNode (vertex1->getName(), vertex1->getX(), vertex1->getY());
-			arbre->getNode(node2->getName())->addEdge(arbre->getNode(vertex1->getName()), weight);
+			//arbre->getNode(node2->getName())->addEdge(arbre->getNode(vertex1->getName()), weight);
+			arbre->addEdge (node2->getName(), vertex1->getName(), weight);
+			edge_count++;
 		}
 		// Si non : Ajoute les deux sommets à ARBRE & l'arête
-		if ((node1 == NULL) && (node2 == NULL))
+		else if ((node1 == NULL) && (node2 == NULL))
 		{
 			cout << "Aucun trouve" << endl;
 			arbre->addNode (vertex1->getName(), vertex1->getX(), vertex1->getY());
 			arbre->addNode (vertex2->getName(), vertex2->getX(), vertex2->getY());
-			arbre->getNode(vertex1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
+			//arbre->getNode(vertex1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
+			arbre->addEdge (vertex1->getName(), vertex2->getName(), weight);
+			edge_count++;
 		}
 		
 		// Vérif si les deux sommets de l'arête font partie de ARBRE
 		// Pas trop compris cette partie la
 		// TODO : completer
 		// Si non : Ajoute le sommet et l'arête puis continue
-		if ((node1 != NULL) && (node2 != NULL))
+		else if ((node1 != NULL) && (node2 != NULL))
 		{
 			cout << "2 noeuds trouves" << endl;
 			Node* from = arbre->getNode(node1->getName());
 			Node* to = arbre->getNode(node2->getName());
 			// Si oui : Vérifie par un parcours en profondeur (par ses arêtes) 
 				//si le sommet1 atteint sommet2 dans ARBRE
-			if ((from->DepthFirstSeach (to)) || (to->DepthFirstSeach (from)))
+			cout << "Avant test" << endl;
+			if ((from->DepthFirstSeach (to, from, true)) ) //|| (to->DepthFirstSeach (from)))
 				// Si trouvé : Ignore
 				cout << "OK" << endl;
 			else
+			{
 				// Sinon : Ajoute l'arête
-				from->addEdge(to, weight);
+				cout << "Ajout" << endl;
+				//from->addEdge(to, weight);
+				arbre->addEdge (vertex1->getName(), vertex2->getName(), weight);
+				
+				edge_count++;
+			}
 		}
 		
 		cout << "Arbre min : " << endl;
@@ -285,7 +383,7 @@ Graph* Graph::kruskalBasic()
 	
 	while (!edge_list.empty())
 	{
-		cout << "Pop front : " << edge_list.front().weight << endl;
+		//cout << "Pop front : " << edge_list.front().weight << endl;
 		edge_list.pop_front();
 	}
 	
