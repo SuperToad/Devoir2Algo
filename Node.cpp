@@ -31,6 +31,7 @@ void Node::addEdge(Node* node, int _weight)
 			edges = new_edges;
 		}
 		Edge new_edge;
+		new_edge.origin = this;
 		new_edge.vertex = node;
 		new_edge.weight = _weight;
 		edges [edge_count++] = new_edge;

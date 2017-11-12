@@ -9,6 +9,7 @@ const uint EDGES_CAPACITY_DEFAULT = 5;
 class Node {
 	public:		
 		typedef struct{
+			Node* origin;
 			Node* vertex;
 			int weight;
 		} Edge;

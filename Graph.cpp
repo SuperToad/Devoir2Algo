@@ -189,7 +189,6 @@ Graph* Graph::kruskalBasic()
 	// LISTE => Liste des arêtes
 	list<Node::Edge> edge_list;
 	
-	
 	// /!\ Attention toutes les aretes sont en doubles dans le tableau, et donc dans la liste
 	Node::Edge tab [getEdgeCount()*2];
 	int tab_size = 0;
@@ -323,23 +322,33 @@ Graph* Graph::kruskalForest()
 		depth[i] = 1;
 	}
 	
-	// /!\ Attention toutes les aretes sont en doubles dans le tableau, et donc dans la liste
 	Node::Edge tab [getEdgeCount()*2];
 	int tab_size = 0;
 	for (uint i = 0 ; i < vertex_count ; i++)
 		for (uint j = 0 ; j < vertices[i]->getEdgeCount() ; j++)
-			tab[tab_size++] = vertices[i]->getEdge(j);
+		{
+			bool present = false;
+			// Verification de la presence de l'arete inverse
+			for (uint k = 0 ; k < tab_size ; k++)
+				if ( (tab[k].vertex->getName() == vertices[i]->getEdge(j).origin->getName()) 
+						&& (tab[k].origin->getName() == vertices[i]->getEdge(j).vertex->getName()) )
+							present = true;
+
+			if (!present)
+					tab[tab_size++] = vertices[i]->getEdge(j);
+		}
 			
-	for (uint i = 0 ; i < getEdgeCount()*2 ; i++)
+			
+	for (uint i = 0 ; i < getEdgeCount() ; i++)
 		cout << "Weight " << i << " : " << tab[i].weight << endl;
 	
 	// Les trie dans l'ordre croissant
-	quick_sort(tab, 0, getEdgeCount()*2 - 1);
+	quick_sort(tab, 0, getEdgeCount() - 1);
 	
-	for (uint i = 0 ; i < getEdgeCount()*2 ; i++)
+	for (uint i = 0 ; i < getEdgeCount() ; i++)
 		cout << "Weight " << i << " : " << tab[i].weight << endl;
 	
-	for (uint i = 0 ; i < getEdgeCount()*2 ; i++)
+	for (uint i = 0 ; i < getEdgeCount() ; i ++)
 		edge_list.push_back (tab[i]);
 	
 	// Ajoute dans l'arbre les sommets du graphe, sans aretes
@@ -349,11 +358,12 @@ Graph* Graph::kruskalForest()
 	uint edge_count = 0;
 	while (edge_count < vertex_count - 1)
 	{
-		Node* vertex1 = edge_list.front().vertex;
-		edge_list.pop_front();
+		Node* vertex1 = edge_list.front().origin;
+		int weight1 = edge_list.front().weight;
+		//edge_list.pop_front();
 		
 		Node* vertex2 = edge_list.front().vertex;
-		int weight = edge_list.front().weight;
+		int weight2 = edge_list.front().weight;
 		edge_list.pop_front();
 		
 		int vertex1number = getNodeNumber (vertex1);
@@ -365,21 +375,14 @@ Graph* Graph::kruskalForest()
 		int son_root = arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName())));
 		int father_root = arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName())));
 		
-		cout << weight << son->getName() << " root (son): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName()))) << endl;
-		cout << weight << father->getName() << " root (father): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName()))) << endl;
+		cout << weight1 << son->getName() << " root (son): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName()))) << endl;
+		cout << weight1 << father->getName() << " root (father): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName()))) << endl;
 		
 		// Verification de la prescence de boucle
 		if ( son_root != father_root )
 		{
-			
-			/*if (vertex2number >= 0)
-			{
-				fathers[arbre->getNodeNumber (arbre->getNode(son->getName()))] = arbre->getNodeNumber (arbre->getNode(father->getName()));
-				depth [maxDepth] = (depth[vertex2number] > depth[vertex1number] + 1? 
-					depth[vertex2number]:depth[vertex1number] + 1);
-			}*/
 		
-			arbre->getNode(father->getName())->addEdge(arbre->getNode(son->getName()), weight );
+			arbre->getNode(father->getName())->addEdge(arbre->getNode(son->getName()), weight1 );
 			edge_count++;
 			
 			if ( depth[father_root] >= depth[son_root])
@@ -402,12 +405,12 @@ Graph* Graph::kruskalForest()
 		/*cout << "Arbre min : " << endl;
 		arbre->showGraph();*/
 		
-		cout << "Tabs : " << endl;
+		/*cout << "Tabs : " << endl;
 		for (uint i = 0 ; i < vertex_count ; i++)
 			cout << arbre->getVertex(i)->getName() << " : Pere : " << fathers[i]
 				<< " : Depth : " << depth[i]
 				<< " : Root : " << arbre->getRoot (fathers, i) << endl;
-		cout << endl;
+		cout << endl;*/
 	}
 	
 	
