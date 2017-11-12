@@ -40,7 +40,7 @@ void Node::addEdge(Node* node, int _weight)
 
 bool Node::isLinkedWith (Node* vertex)
 {
-	for (uint i = 0 ; i < edge_count ; i++)
+	for (int i = 0 ; i < edge_count ; i++)
 	{
 		if (edges[i].vertex->getName() == vertex->getName())
 			return true;
@@ -54,7 +54,7 @@ bool Node::DepthFirstSeach (Node* vertex)
 	if (getName() == vertex->getName())
 			return true;
 	
-	for (uint i = 0 ; i < edge_count ; i++)
+	for (int i = 0 ; i < edge_count ; i++)
 	{
 		if (edges[i].vertex->DepthFirstSeach(vertex))
 			return true;
@@ -66,7 +66,7 @@ bool Node::DepthFirstSeach (Node* vertex)
 int Node::getEdgeWeight (Node* vertex)
 {
 	int weight_min = 9999;
-	for (uint i = 0 ; i < edge_count ; i++)
+	for (int i = 0 ; i < edge_count ; i++)
 	{
 		if (edges[i].vertex->getName() == vertex->getName())
 			if (edges[i].weight < weight_min)
@@ -80,6 +80,6 @@ void Node::showNode ()
 {
 	if (edge_count < 1)
 		cout << name << "\t" << "-" << "\t" << "-" << endl;
-	for (uint i = 0 ; i < edge_count ; i++)
+	for (int i = 0 ; i < edge_count ; i++)
 		cout << name << "\t" << edges[i].vertex->getName() << "\t" << edges[i].weight << endl;
 }
