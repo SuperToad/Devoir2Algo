@@ -1,3 +1,6 @@
+#ifndef NODE_H
+#define NODE_H
+
 #include <string>
 #include <iostream>
 
@@ -37,3 +40,4 @@ class Node {
 		 inline Edge getEdge(int i) {return edges[i];}
 };
 
+#endif
