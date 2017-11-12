@@ -16,11 +16,11 @@ class Node {
 
 	private:
 		string name;		// Valeur du noeud
+		int x;
+		int y;
 		Edge* edges;	// Liste des arrètes
 		uint edge_capacity;	// Capacité du tableau de pointeurs edges
 		uint edge_count;		// Nombre d'enfants total dans edges
-		int x;
-		int y;
 	public:
 		 Node(string _name = "", int _x = 0, int _y = 0);
 		~Node();
