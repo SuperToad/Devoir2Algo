@@ -13,7 +13,7 @@ all: Node.o EdgeHeap.o Graph.o Image.o ez-draw++.o ez-draw.o devoir2.o ez-draw.h
 	g++ -Wall -o devoir2 devoir2.o ez-draw++.o ez-draw.o Node.o Graph.o EdgeHeap.o Image.o $(LIB)
 
 devoir2: devoir2.cpp Graph.o Node.o
-	g++ -Wall -c devoir2.cpp
+	g++ -g -Wall -c devoir2.cpp
 
 ez-draw++: ez-draw++.cpp ez-draw++.h
 	g++ -Wall -c ez-draw++.cpp

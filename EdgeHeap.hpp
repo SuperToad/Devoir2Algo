@@ -1,6 +1,7 @@
 #ifndef EDGEHEAP_H
 #define EDGEHEAP_H
 
+#include "Graph.hpp"
 #include "Node.hpp"
 
 typedef unsigned int uint;

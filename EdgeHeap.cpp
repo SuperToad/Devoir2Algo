@@ -103,7 +103,7 @@ void EdgeHeap::displayHeap ()
 {
 	for (uint i = 0 ; i < heap_size ; i++)
 	{
-		cout << heap[i].weight << endl;
+		cout << heap[i].origin->getName() << heap[i].weight << heap[i].vertex->getName() << endl;
 		if ((i == 0) || ((i+2) && !((i+2) & (i))))
 			cout << endl;
 	}
@@ -144,6 +144,7 @@ int* heapSort(int n, Tas* t)
 EdgeHeap::EdgeHeap(Edge* _heap, uint _heap_size)
 :heap_capacity(MAX_CAPACITY)
 {
+	heap = new Edge[heap_capacity];
 	heap_size = 0;
 	for (uint i = 0 ; i < heap_size ; i++)
 		push(_heap[i]);
