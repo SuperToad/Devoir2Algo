@@ -73,7 +73,7 @@ public:
 		}
 		setColor (ez_red);
 		ostringstream oss;
-		oss << "Weight : " << weight;
+		oss << "Weight : " << weight/2;
 		drawText(EZ_TR, getWidth()-2, 1, oss.str());
 	}
 
@@ -83,7 +83,7 @@ public:
 		setFont(1);
 		trace_graph ();
 		setColor (ez_blue);
-		drawText(EZ_BL, 2, getHeight()-2, "P : Prim\nK : Kruskal\nR : Reset\nQ : Quit");
+		drawText(EZ_BL, 2, getHeight()-2, "O : Prim    P : Prim(Tas)\nJ : Kruskal K : Kruskal(Forets)\nR : Reset\nQ : Quit");
 	}
 
 	void keyPress(KeySym keysym)
@@ -94,12 +94,20 @@ public:
 			case XK_q  :
 				ezDraw.quit();
 				break;
+			case XK_o :
+				drawGraph = initGraph->primBasic();
+				sendExpose();
+				break;
 			case XK_p  :
 				drawGraph = initGraph->primHeap();
 				sendExpose();
 				break;
-			case XK_k  :
+			case XK_j  :
 				drawGraph = initGraph->kruskalBasic();
+				sendExpose();
+				break;
+			case XK_k  :
+				drawGraph = initGraph->kruskalForest();
 				sendExpose();
 				break;
 			case XK_r  :

@@ -147,7 +147,8 @@ Graph* Graph::primBasic()
 			// Le sommet reliant est ajouté (sans arête du tout)
 			arbre->addNode(from->getName(), from->getX(), from->getY());
 			// On ajoute l'arête reliante aux deux sommets
-			arbre->vertices[ arbre->vertex_count - 1 ]->addEdge(arbre->getNode(to->getName()), min);
+			//arbre->vertices[ arbre->vertex_count - 1 ]->addEdge(arbre->getNode(to->getName()), min);
+			arbre->addEdge(arbre->vertices[ arbre->vertex_count - 1 ]->getName(), arbre->getNode(to->getName())->getName(), min);
 		}
 		ancien->removeNode (from);
 		
@@ -184,39 +185,55 @@ Graph* Graph::primHeap()
     // Initialisation du tas_min d'arcs
     cout << "EdgeHeap (init) :" << endl;
     EdgeHeap* e_heap = new EdgeHeap();
- 
-    while (arbre->vertex_count < vertex_count || !e_heap->isEmpty())
+    
+    int edge_count = 0;
+    while (edge_count < vertex_count-1)
     {
+        cout << vertex_index << endl;
         // Ajout de toutes les aretes du dernier sommet ajouté
         // Seulement si le sommet associé n'est PAS dans ARBRE
         if (vertex_index >= 0)
             for (uint i = 0 ; i < vertices[vertex_index]->getEdgeCount() ; i++)
                 if (arbre->getNodeNumber(vertices[vertex_index]->getEdge(i).vertex->getName()) < 0)
+                {
+                    cout << "EdgeHeap push : " << vertices[vertex_index]->getEdge(i).weight <<endl;
                     e_heap->push(vertices[vertex_index]->getEdge(i));
+                }
+        cout << "EdgeHeap :" << endl;
         e_heap->displayHeap();
         // Sortie du sommet de e_heap
         Node::Edge to_add = e_heap->pop();
         // Test si le vertex associé est déjà présent dans ARBRE
         vertex_index = arbre->getNodeNumber(to_add.vertex->getName());
-        // to_add.origin->showNode();
-        // to_add.vertex->showNode();
+        //to_add.origin->showNode();
+        //to_add.vertex->showNode();
         if (vertex_index < 0)
         {
             cout << vertex_index << endl;
             vertex_index = getNodeNumber(to_add.vertex->getName());
+            cout << vertex_index << endl;
             cout << vertices[vertex_index]->getName() << "["
                  << vertices[vertex_index]->getX() << ","
                  << vertices[vertex_index]->getY() << "]" << endl;
             arbre->addNode(vertices[vertex_index]->getName(),
                            vertices[vertex_index]->getX(),
                            vertices[vertex_index]->getY());
+            cout << vertices[vertex_index]->getName() << "["
+                 << vertices[vertex_index]->getX() << ","
+                 << vertices[vertex_index]->getY() << "] ajouté" << endl;
             cout << "vertex_index" << endl;
+            cout << to_add.origin->getName() << endl;
+            cout     << to_add.vertex->getName()<< endl;
+            cout     << to_add.weight << "]" << endl;
             arbre->addEdge(to_add.origin->getName(), to_add.vertex->getName(), to_add.weight);
+            //arbre->getNode(to_add.origin->getName())->addEdge(arbre->getNode(to_add.vertex->getName()), to_add.weight);
+            edge_count++;
             cout << vertex_index << endl;
             ancien->removeNode(vertices[vertex_index]);
         }
         else
             vertex_index = -1;
+        cout << "Arbre min :" << endl;
         arbre->showGraph();
         cout << endl;
     }
@@ -473,7 +490,8 @@ Graph* Graph::kruskalForest()
 		if ( son_root != father_root )
 		{
 		
-			arbre->getNode(father->getName())->addEdge(arbre->getNode(son->getName()), weight1 );
+			//arbre->getNode(father->getName())->addEdge(arbre->getNode(son->getName()), weight1 );
+			arbre->addEdge(father->getName(), son->getName(), weight1 );
 			edge_count++;
 			
 			if ( depth[father_root] >= depth[son_root])
