@@ -309,13 +309,11 @@ Graph* Graph::kruskalBasic()
 	arbre->showGraph();*/
 	
 	// ===> Réitère jusqu'à plus rester de sommets
-	uint edge_count = 0;
-	while (edge_count < vertex_count -1)
+	while (arbre->getEdgeCount() < vertex_count -1 && !edge_list.empty())
 	{
 		Node* node1 = arbre->getNode (edge_list.front().origin->getName ());
 		Node* vertex1 = edge_list.front().origin;
 		//edge_list.pop_front();
-		
 		Node* node2 = arbre->getNode (edge_list.front().vertex->getName ());
 		Node* vertex2 = edge_list.front().vertex;
 		int weight = edge_list.front().weight;
@@ -329,7 +327,6 @@ Graph* Graph::kruskalBasic()
 			arbre->addNode (vertex2->getName(), vertex2->getX(), vertex2->getY());
 			//arbre->getNode(node1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
 			arbre->addEdge (node1->getName(), vertex2->getName(), weight);
-			edge_count++;
 		}
 		else if ((node1 == NULL) && (node2 != NULL))
 		{
@@ -337,7 +334,6 @@ Graph* Graph::kruskalBasic()
 			arbre->addNode (vertex1->getName(), vertex1->getX(), vertex1->getY());
 			//arbre->getNode(node2->getName())->addEdge(arbre->getNode(vertex1->getName()), weight);
 			arbre->addEdge (node2->getName(), vertex1->getName(), weight);
-			edge_count++;
 		}
 		// Si non : Ajoute les deux sommets à ARBRE & l'arête
 		else if ((node1 == NULL) && (node2 == NULL))
@@ -347,12 +343,9 @@ Graph* Graph::kruskalBasic()
 			arbre->addNode (vertex2->getName(), vertex2->getX(), vertex2->getY());
 			//arbre->getNode(vertex1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
 			arbre->addEdge (vertex1->getName(), vertex2->getName(), weight);
-			edge_count++;
 		}
 		
 		// Vérif si les deux sommets de l'arête font partie de ARBRE
-		// Pas trop compris cette partie la
-		// TODO : completer
 		// Si non : Ajoute le sommet et l'arête puis continue
 		else if ((node1 != NULL) && (node2 != NULL))
 		{
@@ -362,7 +355,7 @@ Graph* Graph::kruskalBasic()
 			// Si oui : Vérifie par un parcours en profondeur (par ses arêtes) 
 				//si le sommet1 atteint sommet2 dans ARBRE
 			cout << "Avant test" << endl;
-			if ((from->DepthFirstSeach (to, from, true)) ) //|| (to->DepthFirstSeach (from)))
+			if (from->DepthFirstSeach (to,NULL)) //|| (to->DepthFirstSeach (from)))
 				// Si trouvé : Ignore
 				cout << "OK" << endl;
 			else
@@ -372,7 +365,6 @@ Graph* Graph::kruskalBasic()
 				//from->addEdge(to, weight);
 				arbre->addEdge (vertex1->getName(), vertex2->getName(), weight);
 				
-				edge_count++;
 			}
 		}
 		
@@ -380,6 +372,7 @@ Graph* Graph::kruskalBasic()
 		arbre->showGraph();
 	}
 	
+	cout << "Fini !" << endl;
 	
 	while (!edge_list.empty())
 	{

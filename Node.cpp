@@ -52,19 +52,18 @@ bool Node::isLinkedWith (Node* vertex)
 	return false;
 }
 
-bool Node::DepthFirstSeach (Node* vertex, Node* init, bool start)
+bool Node::DepthFirstSeach (Node* vertex, Node* origin)
 {
 	if (getName() == vertex->getName())
 			return true;
-	
-	if (start == false)
-		if (getName() == init->getName())
-			return false;
-	
+
 	for (int i = 0 ; i < edge_count ; i++)
 	{
-		if (edges[i].vertex->DepthFirstSeach(vertex, init, false))
-			return true;
+		if (edges[i].vertex != origin)
+		{
+			if (edges[i].vertex->DepthFirstSeach(vertex,this))
+				return true;
+		}
 	}
 	
 	return false;

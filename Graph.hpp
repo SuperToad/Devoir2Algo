@@ -3,7 +3,7 @@
 
 #include "Node.hpp"
 
-#define DEFAULT_MAX_NODE 100
+#define DEFAULT_MAX_NODE 1024
 
 class Graph
 {

@@ -7,7 +7,7 @@
 using namespace std;
 typedef unsigned int uint;
 
-const uint EDGES_CAPACITY_DEFAULT = 5;
+const uint EDGES_CAPACITY_DEFAULT = 10;
 
 class Node {
 	public:		
@@ -28,7 +28,7 @@ class Node {
 		 Node(string _name = "", int _x = 0, int _y = 0);
 		~Node();
 		 bool isLinkedWith(Node* vertex); // Renseigne la possibilité d'une liaison avec @vertex
-		 bool DepthFirstSeach(Node* vertex, Node* init, bool start); // Renvoir si il existe un chemin vers @vertex
+		 bool DepthFirstSeach(Node* vertex, Node* origin); // Renvoir si il existe un chemin vers @vertex
 		 int getEdgeWeight(Node* vertex); // Renvoie le poids du noeud en commun avec @vertex, s'il existe)
 		 void addEdge(Node* node, int weight); // Ajoute un enfant au noeud
 		 void showNode ();
