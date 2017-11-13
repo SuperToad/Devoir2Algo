@@ -128,7 +128,7 @@ Graph* Graph::primBasic()
 			{
 				if (ancien->vertices[j]->isLinkedWith (arbre->vertices[k]))
 				{
-					cout << ancien->vertices[j]->getName() << " linked with " << arbre->vertices[k]->getName() << endl;
+					//cout << ancien->vertices[j]->getName() << " linked with " << arbre->vertices[k]->getName() << endl;
 					uint weight = ancien->vertices[j]->getEdgeWeight(arbre->vertices[k]);
 					
 					// On en sélectionne la minimale
@@ -189,14 +189,14 @@ Graph* Graph::primHeap()
     int edge_count = 0;
     while (edge_count < vertex_count-1)
     {
-        cout << vertex_index << endl;
+        //cout << vertex_index << endl;
         // Ajout de toutes les aretes du dernier sommet ajouté
         // Seulement si le sommet associé n'est PAS dans ARBRE
         if (vertex_index >= 0)
             for (uint i = 0 ; i < vertices[vertex_index]->getEdgeCount() ; i++)
                 if (arbre->getNodeNumber(vertices[vertex_index]->getEdge(i).vertex->getName()) < 0)
                 {
-                    cout << "EdgeHeap push : " << vertices[vertex_index]->getEdge(i).weight <<endl;
+                    //cout << "EdgeHeap push : " << vertices[vertex_index]->getEdge(i).weight <<endl;
                     e_heap->push(vertices[vertex_index]->getEdge(i));
                 }
         cout << "EdgeHeap :" << endl;
@@ -209,26 +209,26 @@ Graph* Graph::primHeap()
         //to_add.vertex->showNode();
         if (vertex_index < 0)
         {
-            cout << vertex_index << endl;
+            //cout << vertex_index << endl;
             vertex_index = getNodeNumber(to_add.vertex->getName());
-            cout << vertex_index << endl;
+            /*cout << vertex_index << endl;
             cout << vertices[vertex_index]->getName() << "["
                  << vertices[vertex_index]->getX() << ","
-                 << vertices[vertex_index]->getY() << "]" << endl;
+                 << vertices[vertex_index]->getY() << "]" << endl;*/
             arbre->addNode(vertices[vertex_index]->getName(),
                            vertices[vertex_index]->getX(),
                            vertices[vertex_index]->getY());
-            cout << vertices[vertex_index]->getName() << "["
+           /* cout << vertices[vertex_index]->getName() << "["
                  << vertices[vertex_index]->getX() << ","
                  << vertices[vertex_index]->getY() << "] ajouté" << endl;
             cout << "vertex_index" << endl;
             cout << to_add.origin->getName() << endl;
             cout     << to_add.vertex->getName()<< endl;
-            cout     << to_add.weight << "]" << endl;
+            cout     << to_add.weight << "]" << endl;*/
             arbre->addEdge(to_add.origin->getName(), to_add.vertex->getName(), to_add.weight);
             //arbre->getNode(to_add.origin->getName())->addEdge(arbre->getNode(to_add.vertex->getName()), to_add.weight);
             edge_count++;
-            cout << vertex_index << endl;
+            //cout << vertex_index << endl;
             ancien->removeNode(vertices[vertex_index]);
         }
         else
@@ -238,8 +238,8 @@ Graph* Graph::primHeap()
         cout << endl;
     }
  
-    cout << "Arbre min :" << endl;
-    arbre->showGraph();
+    //cout << "Arbre min :" << endl;
+    //arbre->showGraph();
  
     return arbre;
 }
@@ -310,27 +310,13 @@ Graph* Graph::kruskalBasic()
 	
 	for (uint i = 0 ; i < getEdgeCount() ; i++)
 		edge_list.push_back (tab[i]);
-		
-	/*// 1ère arête
-	// Ajoute les deux sommets à ARBRE (sans arête)
-	Node* vertex = edge_list.front().vertex;
-	arbre->addNode(vertex->getName (), vertex->getX(), vertex->getY());
-	edge_list.pop_front();
-	vertex = edge_list.front().vertex;
-	arbre->addNode(vertex->getName (), vertex->getX(), vertex->getY());
-	// Lie les deux par leur arête reliante
-	arbre->vertices[0]->addEdge(arbre->vertices[1], edge_list.front().weight);
-	// pop l'arête min de LISTE
-	edge_list.pop_front();
-	
-	arbre->showGraph();*/
 	
 	// ===> Réitère jusqu'à plus rester de sommets
 	while (arbre->getEdgeCount() < vertex_count -1 && !edge_list.empty())
 	{
 		Node* node1 = arbre->getNode (edge_list.front().origin->getName ());
 		Node* vertex1 = edge_list.front().origin;
-		//edge_list.pop_front();
+		
 		Node* node2 = arbre->getNode (edge_list.front().vertex->getName ());
 		Node* vertex2 = edge_list.front().vertex;
 		int weight = edge_list.front().weight;
@@ -340,14 +326,14 @@ Graph* Graph::kruskalBasic()
 		// Si oui : Ajoute le nouveau sommet et l'arête reliante
 		if ((node1 != NULL) && (node2 == NULL))
 		{
-			cout << "Trouve : " << node1->getName() << endl;
+			//cout << "Trouve : " << node1->getName() << endl;
 			arbre->addNode (vertex2->getName(), vertex2->getX(), vertex2->getY());
 			//arbre->getNode(node1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
 			arbre->addEdge (node1->getName(), vertex2->getName(), weight);
 		}
 		else if ((node1 == NULL) && (node2 != NULL))
 		{
-			cout << "Trouve : " << node2->getName() << endl;
+			//cout << "Trouve : " << node2->getName() << endl;
 			arbre->addNode (vertex1->getName(), vertex1->getX(), vertex1->getY());
 			//arbre->getNode(node2->getName())->addEdge(arbre->getNode(vertex1->getName()), weight);
 			arbre->addEdge (node2->getName(), vertex1->getName(), weight);
@@ -355,7 +341,7 @@ Graph* Graph::kruskalBasic()
 		// Si non : Ajoute les deux sommets à ARBRE & l'arête
 		else if ((node1 == NULL) && (node2 == NULL))
 		{
-			cout << "Aucun trouve" << endl;
+			//cout << "Aucun trouve" << endl;
 			arbre->addNode (vertex1->getName(), vertex1->getX(), vertex1->getY());
 			arbre->addNode (vertex2->getName(), vertex2->getX(), vertex2->getY());
 			//arbre->getNode(vertex1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
@@ -366,19 +352,19 @@ Graph* Graph::kruskalBasic()
 		// Si non : Ajoute le sommet et l'arête puis continue
 		else if ((node1 != NULL) && (node2 != NULL))
 		{
-			cout << "2 noeuds trouves" << endl;
+			//cout << "2 noeuds trouves" << endl;
 			Node* from = arbre->getNode(node1->getName());
 			Node* to = arbre->getNode(node2->getName());
 			// Si oui : Vérifie par un parcours en profondeur (par ses arêtes) 
 				//si le sommet1 atteint sommet2 dans ARBRE
-			cout << "Avant test" << endl;
+			//cout << "Avant test" << endl;
 			if (from->DepthFirstSeach (to,NULL)) //|| (to->DepthFirstSeach (from)))
 				// Si trouvé : Ignore
-				cout << "OK" << endl;
+				;//cout << "OK" << endl;
 			else
 			{
 				// Sinon : Ajoute l'arête
-				cout << "Ajout" << endl;
+				//cout << "Ajout" << endl;
 				//from->addEdge(to, weight);
 				arbre->addEdge (vertex1->getName(), vertex2->getName(), weight);
 				
@@ -389,7 +375,7 @@ Graph* Graph::kruskalBasic()
 		arbre->showGraph();
 	}
 	
-	cout << "Fini !" << endl;
+	//cout << "Fini !" << endl;
 	
 	while (!edge_list.empty())
 	{
@@ -467,11 +453,11 @@ Graph* Graph::kruskalForest()
 	while (edge_count < vertex_count - 1)
 	{
 		Node* vertex1 = edge_list.front().origin;
-		int weight1 = edge_list.front().weight;
+		int weight = edge_list.front().weight;
 		//edge_list.pop_front();
 		
 		Node* vertex2 = edge_list.front().vertex;
-		int weight2 = edge_list.front().weight;
+		//int weight2 = edge_list.front().weight;
 		edge_list.pop_front();
 		
 		int vertex1number = getNodeNumber (vertex1);
@@ -483,15 +469,14 @@ Graph* Graph::kruskalForest()
 		int son_root = arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName())));
 		int father_root = arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName())));
 		
-		cout << weight1 << son->getName() << " root (son): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName()))) << endl;
-		cout << weight1 << father->getName() << " root (father): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName()))) << endl;
+		//cout << weight << son->getName() << " root (son): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName()))) << endl;
+		//cout << weight << father->getName() << " root (father): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName()))) << endl;
 		
 		// Verification de la prescence de boucle
 		if ( son_root != father_root )
 		{
-		
-			//arbre->getNode(father->getName())->addEdge(arbre->getNode(son->getName()), weight1 );
-			arbre->addEdge(father->getName(), son->getName(), weight1 );
+			//arbre->getNode(father->getName())->addEdge(arbre->getNode(son->getName()), weight );
+			arbre->addEdge(father->getName(), son->getName(), weight );
 			edge_count++;
 			
 			if ( depth[father_root] >= depth[son_root])
@@ -508,18 +493,18 @@ Graph* Graph::kruskalForest()
 			
 		}
 		else
-			cout << "Boucle detectee" << endl;
+			;//cout << "Boucle detectee" << endl;
 		
 		
-		/*cout << "Arbre min : " << endl;
-		arbre->showGraph();*/
+		cout << "Arbre min : " << endl;
+		arbre->showGraph();
 		
-		/*cout << "Tabs : " << endl;
+		cout << "Tabs : " << endl;
 		for (uint i = 0 ; i < vertex_count ; i++)
 			cout << arbre->getVertex(i)->getName() << " : Pere : " << fathers[i]
 				<< " : Depth : " << depth[i]
 				<< " : Root : " << arbre->getRoot (fathers, i) << endl;
-		cout << endl;*/
+		cout << endl;
 	}
 	
 	

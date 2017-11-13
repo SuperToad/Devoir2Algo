@@ -158,7 +158,7 @@ Graph* generate_graph (GrayImage *image)
 
 int main()
 {
-	Graph* graph = new Graph();
+	/*Graph* graph = new Graph();
 	graph->addNode("kek", 50, 100);
 	graph->addNode("ladylel", 500, 400);
 	graph->addNode("sigurdowhen?!", 40, 450);
@@ -175,11 +175,11 @@ int main()
 	graph->showGraph();
 	cout << "Nombre d'arrêtes : " << graph->getEdgeCount() << endl;
 	
-	//graph->primHeap();
-	//graph->kruskalForest();
+	graph->primHeap();
+	graph->kruskalForest();*/
 	
-	// Test de creation d image
-	/*GrayImage img(400, 500);
+	// Test de creation d image A UTILISER SI IMAGE NON TROUVEE
+	/*GrayImage img(600, 800);
 	img.clear(250);
 	img.rectangle(5, 6, 10, 40, 0);
 	img.fillRectangle(55, 56, 100, 200, 10);
@@ -193,13 +193,11 @@ int main()
 	ifstream readTest("image.pgm");
 	GrayImage *image = NULL;
 	image = image->readPGM(readTest);
-	//image->rectangle(15, 6, 40, 20, 90);
-	//image->fillRectangle(65, 56, 100, 200, 180);
 	
-	ofstream writeTestlol("testW.pgm");
-	image->writePGM(writeTestlol);
+	//ofstream writeTestlol("testW.pgm");
+	//image->writePGM(writeTestlol);
 	
-	cout << "Width : " << image->getWidth() << ", Height : " << image->getHeight() << endl;
+	cout << " Image : Width : " << image->getWidth() << ", Height : " << image->getHeight() << endl;
 	
 	/*for(ushort i = 0; i < image->getWidth(); i++)
 		for(ushort j = 0; j < image->getHeight(); j++)
@@ -209,9 +207,9 @@ int main()
 	Graph* new_graph = generate_graph (image);
 	
 	// GUI tests
-	MyWindow win(800, 600, "Algo Prim et Kuskal", new_graph);
+	MyWindow win(image->getWidth(), image->getHeight(), "Algo Prim et Kuskal", new_graph);
 	ezDraw.mainLoop();
 	
-	delete graph;
+	delete new_graph;
 	return 0;
 }
