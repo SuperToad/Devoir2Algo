@@ -51,7 +51,6 @@ Graph* Graph::primBasic()
 			// Le sommet reliant est ajouté (sans arête du tout)
 			arbre->addNode(from->getName(), from->getX(), from->getY());
 			// On ajoute l'arête reliante aux deux sommets
-			//arbre->vertices[ arbre->vertex_count - 1 ]->addEdge(arbre->getNode(to->getName()), min);
 			arbre->addEdge(arbre->vertices[ arbre->vertex_count - 1 ]->getName(), arbre->getNode(to->getName())->getName(), min);
 		}
 		ancien->removeNode (from);
@@ -109,16 +108,11 @@ Graph* Graph::primHeap()
         Node::Edge to_add = e_heap->pop();
         // Test si le vertex associé est déjà présent dans ARBRE
         vertex_index = arbre->getNodeNumber(to_add.vertex->getName());
-        //to_add.origin->showNode();
-        //to_add.vertex->showNode();
+
         if (vertex_index < 0)
         {
-            //cout << vertex_index << endl;
             vertex_index = getNodeNumber(to_add.vertex->getName());
-            /*cout << vertex_index << endl;
-            cout << vertices[vertex_index]->getName() << "["
-                 << vertices[vertex_index]->getX() << ","
-                 << vertices[vertex_index]->getY() << "]" << endl;*/
+
             arbre->addNode(vertices[vertex_index]->getName(),
                            vertices[vertex_index]->getX(),
                            vertices[vertex_index]->getY());
@@ -130,9 +124,9 @@ Graph* Graph::primHeap()
             cout     << to_add.vertex->getName()<< endl;
             cout     << to_add.weight << "]" << endl;*/
             arbre->addEdge(to_add.origin->getName(), to_add.vertex->getName(), to_add.weight);
-            //arbre->getNode(to_add.origin->getName())->addEdge(arbre->getNode(to_add.vertex->getName()), to_add.weight);
+
             edge_count++;
-            //cout << vertex_index << endl;
+
             ancien->removeNode(vertices[vertex_index]);
         }
         else

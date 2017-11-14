@@ -58,6 +58,7 @@ public:
 	: EZWindow(w,h,name), initGraph (graph), drawGraph (graph)
 	{
 		ultrametrics = new int[graph->getVertexCount()*graph->getVertexCount()];
+		redGraph = new Graph();
 	}
 
 	~MyWindow()
@@ -68,6 +69,7 @@ public:
 	
 	Graph* initGraph;
 	Graph* drawGraph;
+	Graph* redGraph;
 	int* ultrametrics;
 
 	void trace_graph_basic ()
@@ -126,6 +128,40 @@ public:
 		trace_graph ();
 		setColor (ez_blue);
 		drawText(EZ_BL, 2, getHeight()-2, "O : Prim    P : Prim(Tas)\nJ : Kruskal K : Kruskal(Forets)\nU : Ultrametriques\nR : Reset\nQ : Quit");
+	}
+	
+	// Bouton de la souris enfonce :
+	void buttonPress(int mouse_x,int mouse_y,int button)
+	{
+		cout << "ButtonPress      win = " << this << " mouse_x = " << mouse_x << " mouse_y = " << mouse_y << " button = " << button << endl ;
+		
+		int min_dist = 999999;
+		Node* node = NULL;
+		for(int i = 0; i < drawGraph->getVertexCount(); i ++)
+		{
+			double x1 = mouse_x;
+			double y1 = mouse_y;
+			double x2 = drawGraph->getVertex(i)->getX ();
+			double y2 = drawGraph->getVertex(i)->getY ();
+			
+			double dist = sqrt((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
+			//cout << dist << endl;
+			if (dist < min_dist)
+			{
+				min_dist = dist;
+				node = drawGraph->getVertex(i);
+			}
+		}
+		redGraph->addNode (node->getName(), node->getX (), node->getY ());
+		
+		for(int i = 0; i < redGraph->getVertexCount(); i ++)
+			redGraph->addEdge( node->getName(), redGraph->getVertex(i)->getName(), 0 );
+			
+		if (redGraph->getVertexCount() > 2)
+		{
+			drawGraph = redGraph;
+			sendExpose();
+		}
 	}
 
 	void keyPress(KeySym keysym)
@@ -223,36 +259,6 @@ Graph* generate_graph (GrayImage *image)
 
 int main()
 {
-	/*Graph* graph = new Graph();
-	graph->addNode("kek", 50, 100);
-	graph->addNode("ladylel", 500, 400);
-	graph->addNode("sigurdowhen?!", 40, 450);
-	graph->addNode("bbq", 100, 300);
-	
-	graph->addEdge("kek","ladylel",999);
-	graph->addEdge("kek","sigurdowhen?!",420);
-	graph->addEdge("ladylel","sigurdowhen?!",1000);
-	graph->addEdge("ladylel","bbq",50);
-	graph->addEdge("kek","kek",1000);
-	graph->addEdge("kek","bbq",500);
-	graph->addEdge("bbq","kek",250);
-	graph->addEdge("bbq","sigurdowhen?!",100);
-	graph->showGraph();
-	cout << "Nombre d'arrêtes : " << graph->getEdgeCount() << endl;
-	
-	graph->primHeap();
-	graph->kruskalForest();*/
-	
-	// Test de creation d image A UTILISER SI IMAGE NON TROUVEE
-	/*GrayImage img(600, 800);
-	img.clear(250);
-	img.rectangle(5, 6, 10, 40, 0);
-	img.fillRectangle(55, 56, 100, 200, 10);
-	img.fillRectangle(305, 250, 150, 200, 10);
-
-	// Test d ecriture
-	ofstream writeTest("image.pgm");
-	img.writePGM(writeTest);*/
 	
 	// Test de lecture
 	ifstream readTest("image.pgm");
@@ -272,19 +278,11 @@ int main()
 	else 
 		image = image->readPGM(readTest);
 	
-	//ofstream writeTestlol("testW.pgm");
-	//image->writePGM(writeTestlol);
-	
 	cout << " Image : Width : " << image->getWidth() << ", Height : " << image->getHeight() << endl;
-	
-	/*for(ushort i = 0; i < image->getWidth(); i++)
-		for(ushort j = 0; j < image->getHeight(); j++)
-			if ((int)image->pixel (i, j) < 50)
-				cout << "Pixel at " << i << ", " << j << " is at " << (int)image->pixel (i, j) << endl;*/
 	
 	Graph* new_graph = generate_graph (image);
 	
-	// GUI tests
+	// GUI
 	MyWindow win(image->getWidth(), image->getHeight(), "Algo Prim et Kuskal", new_graph);
 	ezDraw.mainLoop();
 	

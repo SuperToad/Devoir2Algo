@@ -87,16 +87,12 @@ Graph* Graph::kruskalBasic()
 		// Si oui : Ajoute le nouveau sommet et l'arête reliante
 		if ((node1 != NULL) && (node2 == NULL))
 		{
-			//cout << "Trouve : " << node1->getName() << endl;
 			arbre->addNode (vertex2->getName(), vertex2->getX(), vertex2->getY());
-			//arbre->getNode(node1->getName())->addEdge(arbre->getNode(vertex2->getName()), weight);
 			arbre->addEdge (node1->getName(), vertex2->getName(), weight);
 		}
 		else if ((node1 == NULL) && (node2 != NULL))
 		{
-			//cout << "Trouve : " << node2->getName() << endl;
 			arbre->addNode (vertex1->getName(), vertex1->getX(), vertex1->getY());
-			//arbre->getNode(node2->getName())->addEdge(arbre->getNode(vertex1->getName()), weight);
 			arbre->addEdge (node2->getName(), vertex1->getName(), weight);
 		}
 		// Si non : Ajoute les deux sommets à ARBRE & l'arête
@@ -113,20 +109,16 @@ Graph* Graph::kruskalBasic()
 		// Si non : Ajoute le sommet et l'arête puis continue
 		else if ((node1 != NULL) && (node2 != NULL))
 		{
-			//cout << "2 noeuds trouves" << endl;
 			Node* from = arbre->getNode(node1->getName());
 			Node* to = arbre->getNode(node2->getName());
 			// Si oui : Vérifie par un parcours en profondeur (par ses arêtes) 
 				//si le sommet1 atteint sommet2 dans ARBRE
-			//cout << "Avant test" << endl;
 			if (from->DepthFirstSeach (to,NULL)) //|| (to->DepthFirstSeach (from)))
 				// Si trouvé : Ignore
-				;//cout << "OK" << endl;
+				;
 			else
 			{
 				// Sinon : Ajoute l'arête
-				//cout << "Ajout" << endl;
-				//from->addEdge(to, weight);
 				arbre->addEdge (vertex1->getName(), vertex2->getName(), weight);
 				
 			}
@@ -135,8 +127,6 @@ Graph* Graph::kruskalBasic()
 		cout << "Arbre min : " << endl;
 		arbre->showGraph();
 	}
-	
-	//cout << "Fini !" << endl;
 	
 	while (!edge_list.empty())
 	{
@@ -215,10 +205,8 @@ Graph* Graph::kruskalForest()
 	{
 		Node* vertex1 = edge_list.front().origin;
 		int weight = edge_list.front().weight;
-		//edge_list.pop_front();
 		
 		Node* vertex2 = edge_list.front().vertex;
-		//int weight2 = edge_list.front().weight;
 		edge_list.pop_front();
 		
 		int vertex1number = getNodeNumber (vertex1);
@@ -230,13 +218,9 @@ Graph* Graph::kruskalForest()
 		int son_root = arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName())));
 		int father_root = arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName())));
 		
-		//cout << weight << son->getName() << " root (son): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName()))) << endl;
-		//cout << weight << father->getName() << " root (father): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName()))) << endl;
-		
 		// Verification de la prescence de boucle
 		if ( son_root != father_root )
 		{
-			//arbre->getNode(father->getName())->addEdge(arbre->getNode(son->getName()), weight );
 			arbre->addEdge(father->getName(), son->getName(), weight );
 			edge_count++;
 			
@@ -354,10 +338,8 @@ Graph* Graph::kruskalForestUltrametrique(int* ultrametrics)
 	{
 		Node* vertex1 = edge_list.front().origin;
 		int weight = edge_list.front().weight;
-		//edge_list.pop_front();
 		
 		Node* vertex2 = edge_list.front().vertex;
-		//int weight2 = edge_list.front().weight;
 		edge_list.pop_front();
 		
 		int vertex1number = getNodeNumber (vertex1);
@@ -368,10 +350,7 @@ Graph* Graph::kruskalForestUltrametrique(int* ultrametrics)
 		Node* father = arbre->getNode((maxDepth == vertex1number? vertex1:vertex2)->getName() );
 		int son_root = arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName())));
 		int father_root = arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName())));
-		
-		//cout << weight << son->getName() << " root (son): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName()))) << endl;
-		//cout << weight << father->getName() << " root (father): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName()))) << endl;
-		
+
 		// Verification de la prescence de boucle
 		if ( son_root != father_root )
 		{
