@@ -172,10 +172,7 @@ public:
 				break;
 			case XK_u  :
 				drawGraph = initGraph->kruskalForestUltrametrique(ultrametrics);
-<<<<<<< HEAD
-=======
 				write_ultrametrics (ultrametrics, drawGraph->getVertexCount());
->>>>>>> origin/master
 				sendExpose();
 				break;
 			case XK_r  :
