@@ -26,8 +26,11 @@ public:
 	MyWindow(int w,int h,const char *name, Graph* graph)
 	: EZWindow(w,h,name), initGraph (graph), drawGraph (graph)
 	{
+		selected1 = -1;
+		selected2 = -1;
 		ultrametrics = new int[graph->getVertexCount()*graph->getVertexCount()];
-		redGraph = new Graph();
+		isNotReset = false;
+		// redGraph = new Graph();
 	}
 
 	~MyWindow()
@@ -38,8 +41,11 @@ public:
 	
 	Graph* initGraph;
 	Graph* drawGraph;
-	Graph* redGraph;
+	// Graph* redGraph;
 	int* ultrametrics;
+	int selected1;
+	int selected2;
+	bool isNotReset;
 
 	void write_ultrametrics (int ultrametrics[], int vertex_count)
 	{
@@ -139,6 +145,11 @@ public:
 			}
 			
 		}
+
+		if (selected1 != -1 && selected2 != -1 && ultrametrics[1] > 0 && isNotReset)
+			trace_simple_edge(selected1,selected2, ultrametrics[
+								selected1+selected2*drawGraph->getVertexCount()]);
+
 		setColor (ez_red);
 		ostringstream oss;
 		oss << "Weight : " << weight/2;
@@ -160,7 +171,7 @@ public:
 		cout << "ButtonPress      win = " << this << " mouse_x = " << mouse_x << " mouse_y = " << mouse_y << " button = " << button << endl ;
 		
 		int min_dist = 999999;
-		Node* node = NULL;
+		int index = -1;
 		for(int i = 0; i < drawGraph->getVertexCount(); i ++)
 		{
 			double x1 = mouse_x;
@@ -173,19 +184,24 @@ public:
 			if (dist < min_dist)
 			{
 				min_dist = dist;
-				node = drawGraph->getVertex(i);
+				index = i;
 			}
 		}
-		redGraph->addNode (node->getName(), node->getX (), node->getY ());
+		if (selected1 == -1)
+			selected1 = index;
+		else if (selected2 == -1)
+			selected2 = index;
+		sendExpose();
+		// redGraph->addNode (node->getName(), node->getX (), node->getY ());
 		
-		for(int i = 0; i < redGraph->getVertexCount(); i ++)
-			redGraph->addEdge( node->getName(), redGraph->getVertex(i)->getName(), 0 );
+		// for(int i = 0; i < redGraph->getVertexCount(); i ++)
+		// 	redGraph->addEdge( node->getName(), redGraph->getVertex(i)->getName(), 0 );
 			
-		if (redGraph->getVertexCount() > 2)
-		{
-			drawGraph = redGraph;
-			sendExpose();
-		}
+		// if (redGraph->getVertexCount() > 2)
+		// {
+		// 	drawGraph = redGraph;
+		// 	sendExpose();
+		// }
 	}
 
 	void keyPress(KeySym keysym)
@@ -198,27 +214,35 @@ public:
 				break;
 			case XK_o :
 				drawGraph = initGraph->primBasic();
+				isNotReset = true;
 				sendExpose();
 				break;
 			case XK_p  :
 				drawGraph = initGraph->primHeap();
+				isNotReset = true;
 				sendExpose();
 				break;
 			case XK_j  :
 				drawGraph = initGraph->kruskalBasic();
+				isNotReset = true;
 				sendExpose();
 				break;
 			case XK_k  :
 				drawGraph = initGraph->kruskalForest();
+				isNotReset = true;
 				sendExpose();
 				break;
 			case XK_u  :
 				drawGraph = initGraph->kruskalForestUltrametrique(ultrametrics);
 				write_ultrametrics (ultrametrics, drawGraph->getVertexCount());
+				isNotReset = true;
 				sendExpose();
 				break;
 			case XK_r  :
 				drawGraph = initGraph;
+				selected1 = -1;
+				selected2 = -1;
+				isNotReset = false;
 				sendExpose();
 				break;
 		}
