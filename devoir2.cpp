@@ -25,10 +25,19 @@ class MyWindow : public EZWindow
 public:
 	MyWindow(int w,int h,const char *name, Graph* graph)
 	: EZWindow(w,h,name), initGraph (graph), drawGraph (graph)
-	{}
+	{
+		ultrametrics = new int[graph->getVertexCount()*graph->getVertexCount()];
+	}
+
+	~MyWindow()
+	{
+		if (ultrametrics != NULL)
+			delete ultrametrics;
+	}
 	
 	Graph* initGraph;
 	Graph* drawGraph;
+	int* ultrametrics;
 
 	void trace_graph_basic ()
 	{
@@ -113,7 +122,8 @@ public:
 				sendExpose();
 				break;
 			case XK_u  :
-				drawGraph = initGraph->kruskalForestUltrametrique();
+				drawGraph = initGraph->kruskalForestUltrametrique(ultrametrics);
+				cout << "ultrametrics (0,5)" << ultrametrics[5*drawGraph->getVertexCount()] << endl;
 				sendExpose();
 				break;
 			case XK_r  :

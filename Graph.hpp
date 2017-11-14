@@ -37,7 +37,7 @@ class Graph
 		Graph* kruskalBasic();
 		Graph* kruskalForest();
 		
-		Graph* kruskalForestUltrametrique();
+		Graph* kruskalForestUltrametrique(int* ultrametrics);
 };
 
 #endif
