@@ -36,6 +36,8 @@ class Graph
 		bool sortEdges(const Node::Edge& first, const Node::Edge& second);
 		Graph* kruskalBasic();
 		Graph* kruskalForest();
+		
+		Graph* kruskalForestUltrametrique();
 };
 
 #endif

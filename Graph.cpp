@@ -517,3 +517,135 @@ Graph* Graph::kruskalForest()
 	return arbre;
 	
 }
+
+int getUltrametrique(int* array, int vertex_count, int x, int y)
+{
+	return array[y*vertex_count + x];
+}
+
+Graph* Graph::kruskalForestUltrametrique()
+{
+	cout << endl << "kruskalForest :" << endl;
+	
+	// ARBRE => On crée un arbre vide
+	Graph* arbre = new Graph();
+	
+	// LISTE => Liste des arêtes
+	list<Node::Edge> edge_list;
+	
+	// FATHERS => Tableau des pères
+	int fathers [vertex_count];
+	
+	// DEPTH => Profondeur des sommets
+	int depth [vertex_count];
+	
+	// ULTRAMETRIQUES => Tableau des pères
+	int ultrametrique [vertex_count*vertex_count];
+	
+	for (uint i = 0 ; i < vertex_count ; i++)
+	{
+		fathers[i] = i;
+		depth[i] = 1;
+	}
+	
+	Node::Edge tab [getEdgeCount()*2];
+	int tab_size = 0;
+	for (uint i = 0 ; i < vertex_count ; i++)
+		for (uint j = 0 ; j < vertices[i]->getEdgeCount() ; j++)
+		{
+			bool present = false;
+			// Verification de la presence de l'arete inverse
+			for (uint k = 0 ; k < tab_size ; k++)
+				if ( (tab[k].vertex->getName() == vertices[i]->getEdge(j).origin->getName()) 
+						&& (tab[k].origin->getName() == vertices[i]->getEdge(j).vertex->getName()) )
+							present = true;
+
+			if (!present)
+					tab[tab_size++] = vertices[i]->getEdge(j);
+		}
+			
+			
+	for (uint i = 0 ; i < getEdgeCount() ; i++)
+		cout << "Weight " << i << " : " << tab[i].weight << endl;
+	
+	// Les trie dans l'ordre croissant
+	quick_sort(tab, 0, getEdgeCount() - 1);
+	
+	for (uint i = 0 ; i < getEdgeCount() ; i++)
+		cout << "Weight " << i << " : " << tab[i].weight << endl;
+	
+	for (uint i = 0 ; i < getEdgeCount() ; i ++)
+		edge_list.push_back (tab[i]);
+	
+	// Ajoute dans l'arbre les sommets du graphe, sans aretes
+	for (uint i = 0 ; i < vertex_count ; i++)
+		arbre->addNode (getVertex(i)->getName(), getVertex(i)->getX(), getVertex(i)->getY());
+	
+	uint edge_count = 0;
+	while (edge_count < vertex_count - 1)
+	{
+		Node* vertex1 = edge_list.front().origin;
+		int weight = edge_list.front().weight;
+		//edge_list.pop_front();
+		
+		Node* vertex2 = edge_list.front().vertex;
+		//int weight2 = edge_list.front().weight;
+		edge_list.pop_front();
+		
+		int vertex1number = getNodeNumber (vertex1);
+		int vertex2number = getNodeNumber (vertex2);
+		int maxDepth = (depth[vertex2number] > depth[vertex1number]? vertex2number:vertex1number);
+		int minDepth = (depth[vertex2number] <= depth[vertex1number]? vertex2number:vertex1number);
+		Node* son = arbre->getNode((minDepth == vertex1number? vertex1:vertex2)->getName() );
+		Node* father = arbre->getNode((maxDepth == vertex1number? vertex1:vertex2)->getName() );
+		int son_root = arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName())));
+		int father_root = arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName())));
+		
+		//cout << weight << son->getName() << " root (son): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(son->getName()))) << endl;
+		//cout << weight << father->getName() << " root (father): " << arbre->getRoot (fathers, arbre->getNodeNumber (arbre->getNode(father->getName()))) << endl;
+		
+		// Verification de la prescence de boucle
+		if ( son_root != father_root )
+		{
+			//arbre->getNode(father->getName())->addEdge(arbre->getNode(son->getName()), weight );
+			arbre->addEdge(father->getName(), son->getName(), weight );
+			edge_count++;
+			
+			if ( depth[father_root] >= depth[son_root])
+				fathers[son_root] = father_root;
+			else
+			{
+				int tmp = depth[father_root];
+				depth[father_root] = depth[son_root];
+				depth[son_root] = tmp;
+				fathers[son_root] = father_root;
+			}
+			if (depth[son_root] + 1 > depth[father_root])
+				depth[father_root] = depth[son_root] + 1;
+			
+		}
+		else
+			;//cout << "Boucle detectee" << endl;
+		
+		
+		cout << "Arbre min : " << endl;
+		arbre->showGraph();
+		
+		cout << "Tabs : " << endl;
+		for (uint i = 0 ; i < vertex_count ; i++)
+			cout << arbre->getVertex(i)->getName() << " : Pere : " << fathers[i]
+				<< " : Depth : " << depth[i]
+				<< " : Root : " << arbre->getRoot (fathers, i) << endl;
+		cout << endl;
+	}
+	
+	
+	while (!edge_list.empty())
+	{
+		//cout << "Pop front : " << edge_list.front().weight << endl;
+		edge_list.pop_front();
+	}
+	
+	return arbre;
+	
+}

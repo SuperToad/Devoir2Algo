@@ -10,6 +10,8 @@
 #include <fstream>
 #include <cmath>
 
+#define NB_SOMMETS_GENERES 15
+
 typedef unsigned short int ushort;
 typedef unsigned int uint;
 typedef unsigned char ubyte;
@@ -124,19 +126,37 @@ Graph* generate_graph (GrayImage *image)
 	
 	char name_c = 'A';
 	
-	while (graph->getVertexCount() < 10)
+	while (graph->getVertexCount() < NB_SOMMETS_GENERES)
 	{
 		int randx = EZDraw::random (image->getWidth ());
 		int randy = EZDraw::random (image->getHeight ());
 		
 		if ((int)image->pixel (randx, randy) < 50)
 		{
-			stringstream name;
-			name << name_c;
-			graph->addNode(name.str(), randx, randy);
+			bool too_close = false;
 			
-			name_c++;
+			for(int i = 0; i < graph->getVertexCount(); i++)
+			{
+				double x1 = graph->getVertex(i)->getX ();
+				double y1 = graph->getVertex(i)->getY ();
+				double x2 = randx;
+				double y2 = randy;
+				
+				double dist = sqrt((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
+				//cout << dist << endl;
+				if (dist < 30)
+					too_close = true;
+			}
+			if (!too_close)
+			{
+				stringstream name;
+				name << name_c;
+				graph->addNode(name.str(), randx, randy);
+				
+				name_c++;
+			}
 		}
+		
 	}
 	
 	for(int i = 0; i < graph->getVertexCount(); i++)
@@ -192,7 +212,20 @@ int main()
 	// Test de lecture
 	ifstream readTest("image.pgm");
 	GrayImage *image = NULL;
-	image = image->readPGM(readTest);
+	
+	if (readTest == NULL)
+	{
+		image = new GrayImage (600, 800);
+		image->clear(250);
+		image->rectangle(5, 6, 10, 40, 0);
+		image->fillRectangle(55, 56, 100, 200, 10);
+		image->fillRectangle(305, 250, 150, 200, 10);
+		
+		ofstream writeTest("image.pgm");
+		image->writePGM(writeTest);
+	}
+	else 
+		image = image->readPGM(readTest);
 	
 	//ofstream writeTestlol("testW.pgm");
 	//image->writePGM(writeTestlol);
