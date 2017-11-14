@@ -146,7 +146,7 @@ public:
 			
 		}
 
-		if (selected1 != -1 && selected2 != -1 && ultrametrics[1] > 0 && isNotReset)
+		if (selected1 != -1 && selected2 != -1 && ultrametrics[0] == 0 && isNotReset)
 			trace_simple_edge(selected1,selected2, ultrametrics[
 								selected1+selected2*drawGraph->getVertexCount()]);
 
@@ -162,7 +162,7 @@ public:
 		setFont(1);
 		trace_graph ();
 		setColor (ez_blue);
-		drawText(EZ_BL, 2, getHeight()-2, "O : Prim    P : Prim(Tas)\nJ : Kruskal K : Kruskal(Forets)\nU : Ultrametriques\nR : Reset\nQ : Quit");
+		drawText(EZ_BL, 2, getHeight()-2, "O : Prim    P : Prim(Tas)\nJ : Kruskal K : Kruskal(Forets)\nU : Ultrametriques\nR : Reset    E : Reset selection\nQ : Quit");
 	}
 	
 	// Bouton de la souris enfonce :
@@ -236,6 +236,11 @@ public:
 				drawGraph = initGraph->kruskalForestUltrametrique(ultrametrics);
 				write_ultrametrics (ultrametrics, drawGraph->getVertexCount());
 				isNotReset = true;
+				sendExpose();
+				break;
+			case XK_e  :
+				selected1 = -1;
+				selected2 = -1;
 				sendExpose();
 				break;
 			case XK_r  :
