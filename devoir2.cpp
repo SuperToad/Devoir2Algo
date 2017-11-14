@@ -57,6 +57,24 @@ public:
 				}
 		}
 	}
+
+	// Trace l'arête entre les deux noeuds passés en commentaire et utilise le poids en paramètre
+	void trace_simple_edge(Node* from, Node* to, int weight)
+	{
+		setColor (ez_green);
+		ostringstream oss;
+		oss << weight;
+		drawText(EZ_TL, (from->getX() + to->getX())/2-10,
+			(from->getY() + to->getY())/2-10, oss.str());
+		drawLine(from->getX(),from->getY(),to->getX(),to->getY());
+	}
+	// Permet de juste passer les coordonnées dans le tableau de mesures ultramétriques
+	void trace_simple_edge(int node1, int node2, int weight)
+	{
+		Node* from = drawGraph->getVertex(node1);
+		Node* to = drawGraph->getVertex(node2);
+		trace_simple_edge(from,to,weight);
+	}
 	
 	void trace_graph ()
 	{
@@ -123,7 +141,6 @@ public:
 				break;
 			case XK_u  :
 				drawGraph = initGraph->kruskalForestUltrametrique(ultrametrics);
-				cout << "ultrametrics (0,5)" << ultrametrics[5*drawGraph->getVertexCount()] << endl;
 				sendExpose();
 				break;
 			case XK_r  :
