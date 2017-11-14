@@ -20,6 +20,37 @@ using namespace std;
 
 EZDraw ezDraw;
 
+void write_ultrametrics (int ultrametrics[], int vertex_count)
+{
+	cout << "Ultrametriques : " << endl;
+	
+	string data;
+	ofstream outfile;
+	outfile.exceptions ( std::ofstream::failbit | std::ofstream::badbit );
+	
+	try {
+		outfile.open("ultrametrics.txt");
+		
+		if (!outfile)
+			throw std::runtime_error("Erreur d'ouverture du fichier d'ecriture");
+
+		cout << "Ecriture du fichier..." << endl;
+		
+		for (uint i = 0 ; i < vertex_count*vertex_count ; i++)
+		{
+			outfile << ultrametrics[i] << "\t";
+			if ((i+1)%vertex_count == 0) outfile << endl;
+		}
+		
+		outfile.close();
+		
+	}catch (exception &e) {
+        cerr << e.what() << std::endl;
+    }
+	
+	cout << "Voir ultrametrics.txt pour les resultats" << endl;
+}
+
 class MyWindow : public EZWindow 
 {
 public:
@@ -123,7 +154,7 @@ public:
 				break;
 			case XK_u  :
 				drawGraph = initGraph->kruskalForestUltrametrique(ultrametrics);
-				cout << "ultrametrics (0,5)" << ultrametrics[5*drawGraph->getVertexCount()] << endl;
+				write_ultrametrics (ultrametrics, drawGraph->getVertexCount());
 				sendExpose();
 				break;
 			case XK_r  :
