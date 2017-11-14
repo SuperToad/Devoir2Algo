@@ -20,37 +20,6 @@ using namespace std;
 
 EZDraw ezDraw;
 
-void write_ultrametrics (int ultrametrics[], int vertex_count)
-{
-	cout << "Ultrametriques : " << endl;
-	
-	string data;
-	ofstream outfile;
-	outfile.exceptions ( std::ofstream::failbit | std::ofstream::badbit );
-	
-	try {
-		outfile.open("ultrametrics.txt");
-		
-		if (!outfile)
-			throw std::runtime_error("Erreur d'ouverture du fichier d'ecriture");
-
-		cout << "Ecriture du fichier..." << endl;
-		
-		for (uint i = 0 ; i < vertex_count*vertex_count ; i++)
-		{
-			outfile << ultrametrics[i] << "\t";
-			if ((i+1)%vertex_count == 0) outfile << endl;
-		}
-		
-		outfile.close();
-		
-	}catch (exception &e) {
-        cerr << e.what() << std::endl;
-    }
-	
-	cout << "Voir ultrametrics.txt pour les resultats" << endl;
-}
-
 class MyWindow : public EZWindow 
 {
 public:
@@ -72,6 +41,43 @@ public:
 	Graph* redGraph;
 	int* ultrametrics;
 
+	void write_ultrametrics (int ultrametrics[], int vertex_count)
+	{
+		cout << "Ultrametriques : " << endl;
+		
+		string data;
+		ofstream outfile;
+		outfile.exceptions ( std::ofstream::failbit | std::ofstream::badbit );
+		
+		try {
+			outfile.open("ultrametrics.txt");
+			
+			if (!outfile)
+				throw std::runtime_error("Erreur d'ouverture du fichier d'ecriture");
+
+			cout << "Ecriture du fichier..." << endl;
+
+			outfile << '\t';
+			for (uint i = 0 ; i < vertex_count ; i++)
+				outfile << drawGraph->getVertex(i)->getName() << '\t';
+
+			outfile << endl << drawGraph->getVertex(0)->getName() << '\t';	
+			for (uint i = 0 ; i < vertex_count*vertex_count ; i++)
+			{
+				outfile << ultrametrics[i] << "\t";
+				if ((i+1)%vertex_count == 0 && (i+1 < vertex_count*vertex_count)) 
+					outfile << endl << drawGraph->getVertex((i+1)/vertex_count)->getName() << '\t';
+			}
+			
+			outfile.close();
+			
+		}catch (exception &e) {
+	        cerr << e.what() << std::endl;
+	    }
+		
+		cout << "Voir ultrametrics.txt pour les resultats" << endl;
+	}
+
 	void trace_graph_basic ()
 	{
 		for(int i = 0; i < drawGraph->getVertexCount(); i ++)
@@ -89,6 +95,24 @@ public:
 					
 				}
 		}
+	}
+
+	// Trace l'arête entre les deux noeuds passés en commentaire et utilise le poids en paramètre
+	void trace_simple_edge(Node* from, Node* to, int weight)
+	{
+		setColor (ez_green);
+		ostringstream oss;
+		oss << weight;
+		drawText(EZ_TL, (from->getX() + to->getX())/2-10,
+			(from->getY() + to->getY())/2-10, oss.str());
+		drawLine(from->getX(),from->getY(),to->getX(),to->getY());
+	}
+	// Permet de juste passer les coordonnées dans le tableau de mesures ultramétriques
+	void trace_simple_edge(int node1, int node2, int weight)
+	{
+		Node* from = drawGraph->getVertex(node1);
+		Node* to = drawGraph->getVertex(node2);
+		trace_simple_edge(from,to,weight);
 	}
 	
 	void trace_graph ()
