@@ -392,17 +392,20 @@ Graph* Graph::kruskalForestUltrametrique()
 				depth[father_root] = depth[son_root] + 1;
 				
 			// Ultrametrie
-			/*for (uint i = 0 ; i < vertex_count ; i++)
-				if (arbre->getRoot (fathers, i) == son_root)
-					for (uint j = 0 ; j < vertex_count ; j++)
-						if (arbre->getRoot (fathers, j) == father_root)
+			for (uint i = 0 ; i < vertex_count ; ++i)
+				if (fathers[i] == son_root)
+				{
+					for (uint j = 0 ; j < vertex_count ; ++j)
+						if (fathers[j] == father_root)
 						{
-							cout << "lol" << endl;*/
-							if (getUltrametrique(ultrametrique, vertex_count, son_root, father_root) == 0)
-								setUltrametrique(ultrametrique, vertex_count, son_root, father_root, weight);
-							if (getUltrametrique(ultrametrique, vertex_count, father_root, son_root) == 0)
-								setUltrametrique(ultrametrique, vertex_count, father_root, son_root, weight);
-						//}
+							//cout << "lol" << endl;
+							if (getUltrametrique(ultrametrique, vertex_count, i, j) == 0)
+								setUltrametrique(ultrametrique, vertex_count, i, j, weight);
+							if (getUltrametrique(ultrametrique, vertex_count, j, i) == 0)
+								setUltrametrique(ultrametrique, vertex_count, j, i, weight);
+						}
+					fathers[i] = father_root;
+				}
 			
 		}
 		else
@@ -422,7 +425,10 @@ Graph* Graph::kruskalForestUltrametrique()
 	
 	cout << "Ultrametriques : " << endl;
 	for (uint i = 0 ; i < vertex_count*vertex_count ; i++)
-		cout << ultrametrique[i] << " ";
+	{
+		cout << ultrametrique[i] << "\t";
+		if ((i+1)%vertex_count == 0) cout << endl;
+	}
 	cout << endl;
 	
 	while (!edge_list.empty())
