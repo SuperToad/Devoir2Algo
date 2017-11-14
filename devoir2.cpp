@@ -85,7 +85,7 @@ public:
 		setFont(1);
 		trace_graph ();
 		setColor (ez_blue);
-		drawText(EZ_BL, 2, getHeight()-2, "O : Prim    P : Prim(Tas)\nJ : Kruskal K : Kruskal(Forets)\nR : Reset\nQ : Quit");
+		drawText(EZ_BL, 2, getHeight()-2, "O : Prim    P : Prim(Tas)\nJ : Kruskal K : Kruskal(Forets)\nU : Ultrametriques\nR : Reset\nQ : Quit");
 	}
 
 	void keyPress(KeySym keysym)
@@ -110,6 +110,10 @@ public:
 				break;
 			case XK_k  :
 				drawGraph = initGraph->kruskalForest();
+				sendExpose();
+				break;
+			case XK_u  :
+				drawGraph = initGraph->kruskalForestUltrametrique();
 				sendExpose();
 				break;
 			case XK_r  :
